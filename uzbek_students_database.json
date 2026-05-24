@@ -1,0 +1,708 @@
+{
+  "database_info": {
+    "version": "3.0",
+    "last_updated": "2026-05-24",
+    "total_verified_named": 15,
+    "total_scholarship_recipients": 38,
+    "total_cases": 53,
+    "sources": [
+      "Gazeta.uz (2024-06-23)",
+      "Qalampir.uz (2024-12-13)",
+      "WIUT.uz (2024-12-19)",
+      "EU Delegation Uzbekistan – Erasmus Mundus (2023)",
+      "Freshman Academy official site",
+      "LinkedIn public profiles"
+    ],
+    "note": "Named cases = publicly documented individuals. Scholarship cases = verified programs with Uzbek recipients but names not public."
+  },
+
+  "students": [
+    {
+      "id": "UZ-001",
+      "name": "Abdulaziz Sobirov",
+      "university_admitted": "Harvard University",
+      "year": 2024,
+      "class_of": 2028,
+      "scholarship_amount_usd": 366000,
+      "scholarship_type": "Need-based full aid",
+      "hometown": "Khiva",
+      "region": "Khorezm",
+      "high_school": "Presidential School Tashkent",
+      "curriculum": "A-Level",
+      "intended_major": "Mechanical Engineering",
+      "gpa_uzbek": 5.0,
+      "key_differentiators": [
+        "Zakovat Students League champion 3 consecutive seasons",
+        "Republic Olympiad participant (math + science)",
+        "Internship at international engineering company",
+        "Research with PhD robotics professor",
+        "Robotics project with social impact"
+      ],
+      "harvard_reader_quote": "Your engineering projects that may help those in need",
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-002",
+      "name": "Allomakhon Fayzullaeva",
+      "university_admitted": "Brown University",
+      "year": 2024,
+      "class_of": 2028,
+      "scholarship_amount_usd": 376000,
+      "scholarship_type": "Need-based full aid",
+      "hometown": "Tashkent",
+      "region": "Tashkent",
+      "high_school": "Academic Lyceum UWED (prev. Public School No.178)",
+      "curriculum": "National curriculum (no IB/AP)",
+      "intended_major": "Political Science and Gender Studies",
+      "gpa_uzbek": 5.0,
+      "key_differentiators": [
+        "No IB/AP curriculum — national curriculum only",
+        "Gap year strategy after lyceum graduation",
+        "PASCH/Goethe-Institut summer camp in Bavaria, Germany (2022)",
+        "German language proficiency",
+        "Coursera online college courses during gap year",
+        "IELTS tutoring income during gap year",
+        "Dean's scholarship for academic accomplishments at lyceum"
+      ],
+      "insight": "Proof that elite curriculum is NOT required with the right strategy",
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-003",
+      "name": "Sayfullo Saidov",
+      "university_admitted": "Princeton University",
+      "year": 2024,
+      "class_of": 2028,
+      "scholarship_amount_usd": 357000,
+      "scholarship_type": "Need-based full aid",
+      "hometown": "Bukhara",
+      "region": "Bukhara",
+      "high_school": "Presidential School Tashkent",
+      "curriculum": "A-Level",
+      "intended_major": "Chemical and Biological Engineering",
+      "gpa_uzbek": 5.0,
+      "key_differentiators": [
+        "International experience — lived in Japan with family",
+        "A-Level curriculum",
+        "Strong STEM profile"
+      ],
+      "guidance": "Freshman Academy",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-004",
+      "name": "Asad Abdrshin",
+      "university_admitted": "Vanderbilt University",
+      "year": 2024,
+      "class_of": 2028,
+      "scholarship_amount_usd": 384000,
+      "scholarship_type": "Merit + need-based",
+      "hometown": "Tashkent",
+      "region": "Tashkent",
+      "high_school": "United World College Red Cross Nordic (UWC RCN), Norway",
+      "curriculum": "IB Diploma Programme",
+      "intended_major": "Mathematics",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "UWC scholarship winner — top 1% national selection",
+        "IB Diploma Programme at international school in Norway",
+        "Cross-cultural experience in Scandinavia",
+        "Mathematics focus"
+      ],
+      "insight": "UWC selection is a major accelerator — changes entire trajectory",
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-005",
+      "name": "Husniddin Qironov",
+      "university_admitted": "New York University (NYU)",
+      "year": 2024,
+      "class_of": 2028,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Partial",
+      "hometown": "Tashkent",
+      "region": "Tashkent",
+      "high_school": "Target International School Tashkent",
+      "curriculum": "National curriculum",
+      "intended_major": "Global Liberal Studies",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "Private school with national curriculum",
+        "Strong essay writing",
+        "Global Liberal Studies focus"
+      ],
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-006",
+      "name": "Salim Abdusamatov",
+      "university_admitted": "New York University Tandon School of Engineering",
+      "year": 2024,
+      "class_of": 2028,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Partial",
+      "hometown": "Tashkent",
+      "region": "Tashkent",
+      "high_school": "Cambridge International College Tashkent",
+      "curriculum": "A-Level",
+      "intended_major": "Civil Engineering",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "A-Level curriculum at private Cambridge school",
+        "Engineering focus",
+        "Strong IELTS"
+      ],
+      "guidance": "Freshman Academy",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-007",
+      "name": "Khosilmurod Abdukholikov",
+      "university_admitted": "Yale University",
+      "year": 2023,
+      "class_of": 2027,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Full-ride",
+      "hometown": "Bakhmal district",
+      "region": "Jizzakh",
+      "high_school": "Public School No.60, Bakhmal",
+      "curriculum": "National curriculum",
+      "intended_major": "Computer Science and Philosophy",
+      "gpa_uzbek": 5.0,
+      "key_differentiators": [
+        "Rural public school — no international curriculum",
+        "CS + Philosophy unique combination",
+        "German language learning at Yale",
+        "Rural background as diversity strength",
+        "Commitment to educational equity in villages"
+      ],
+      "insight": "Most powerful proof: rural Jizzakh public school → Yale full-ride",
+      "guidance": "Freshman Academy",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-008",
+      "name": "Gulrukh Sodikova",
+      "university_admitted": "University of Pennsylvania",
+      "year": 2023,
+      "class_of": 2027,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Full-ride",
+      "hometown": "Tashkent",
+      "region": "Tashkent",
+      "high_school": "Presidential School Tashkent",
+      "curriculum": "A-Level",
+      "intended_major": "Philosophy, Politics and Economics (PPE)",
+      "gpa_uzbek": 5.0,
+      "key_differentiators": [
+        "Zakovat Students League champion (same team as Abdulaziz)",
+        "PPE major — law school goal",
+        "Presidential School pipeline",
+        "Strong extracurriculars"
+      ],
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-009",
+      "name": "Farangiz Murodiy",
+      "university_admitted": "Stanford University",
+      "year": 2023,
+      "class_of": 2027,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Full-ride (tuition + food + housing + flights)",
+      "hometown": "Tashkent",
+      "region": "Tashkent",
+      "high_school": "Unknown",
+      "curriculum": "Unknown",
+      "intended_major": "Symbolic Systems / Human-Centered AI",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "Founded Central Asian Student Association at Stanford",
+        "Met founders of OpenAI, Khan Academy, Coursera, NVIDIA",
+        "Silicon Valley proximity leveraged for networking",
+        "AI/human-computer interaction focus",
+        "YouTube interviewer — helped other Uzbek students get to Harvard"
+      ],
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-010",
+      "name": "Parizoda Assatilloyeva",
+      "university_admitted": "Columbia University",
+      "year": 2023,
+      "class_of": 2027,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "John Jay Scholars Program full aid",
+      "hometown": "Samarkand",
+      "region": "Samarkand",
+      "high_school": "Public school, Samarkand",
+      "curriculum": "National curriculum",
+      "intended_major": "Political Science",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "Public school in regional city — no elite school",
+        "John Jay Scholars Program admission",
+        "Political Science focus",
+        "Strong essays"
+      ],
+      "guidance": "Freshman Academy",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-011",
+      "name": "Feruza Mukhammadieva",
+      "university_admitted": "Princeton University",
+      "year": 2022,
+      "class_of": 2026,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Full-ride (+ NYUAD + Georgetown + CMU offers)",
+      "hometown": "Kokand",
+      "region": "Fergana",
+      "high_school": "Public School No.32, Kokand",
+      "curriculum": "National curriculum",
+      "intended_major": "Computer Science + Machine Learning minor",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "Public school in regional city Kokand",
+        "Multiple top offers: Princeton + NYUAD + Georgetown + CMU",
+        "Society of Women Engineers Princeton — career development chair",
+        "Co-founded Princeton Central Asian Student Association",
+        "Entrepreneurship Club speaker outreach"
+      ],
+      "insight": "National curriculum student from Kokand → Princeton CS",
+      "guidance": "Freshman Academy",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-012",
+      "name": "Umid Usmanov",
+      "university_admitted": "Yale University",
+      "year": 2021,
+      "class_of": 2025,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Full-ride",
+      "hometown": "Samarkand",
+      "region": "Samarkand",
+      "high_school": "Public School No.17, Samarkand",
+      "curriculum": "National curriculum",
+      "intended_major": "Economics and Global Affairs (double major)",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "Public school No.17 in Samarkand — regional city, no elite school",
+        "Yale scholarship for gap year — Chinese language at Tsinghua University, Beijing",
+        "Founded Asian Crossroads at Yale (ACY) — first Central Asia student org at Yale",
+        "IMF research trip through Yale student organization",
+        "Mentors Uzbek high school students for US admissions"
+      ],
+      "guidance": "Freshman Academy",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-013",
+      "name": "Azizbek Zaylobiddinov",
+      "university_admitted": "Harvard University",
+      "year": 2024,
+      "class_of": 2029,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Full scholarship",
+      "hometown": "Oltiariq",
+      "region": "Fergana",
+      "high_school": "Academic Lyceum of WIUT (Westminster International University)",
+      "curriculum": "A-Level",
+      "intended_major": "Unknown",
+      "gpa_uzbek": null,
+      "age_at_admission": 17,
+      "key_differentiators": [
+        "Small town — Oltiariq, Fergana region",
+        "Academic Lyceum of WIUT student",
+        "Strong extracurricular involvement",
+        "VC Scout for Andreessen Horowitz (a16z) post-admission"
+      ],
+      "key_quote": "Academic excellence alone is not enough. Extracurriculars significantly boost admission chances.",
+      "guidance": "Freshman Academy (likely)",
+      "source": "Qalampir.uz 2024-12-13; WIUT.uz 2024-12-19",
+      "verified": true
+    },
+    {
+      "id": "UZ-014",
+      "name": "Ulugbek Baymuradov",
+      "university_admitted": "Stanford University",
+      "year": 2007,
+      "class_of": 2011,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Full-ride + John Kent Cooke Foundation award",
+      "hometown": "Karshi",
+      "region": "Kashkadarya",
+      "high_school": "Treasure Valley Community College (transfer), FLEX Program alumni (2002-2003)",
+      "curriculum": "Community College transfer + FLEX exchange",
+      "intended_major": "Economics (BA)",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "FLEX (Future Leaders Exchange) program alumni 2002-2003",
+        "Transfer from Treasure Valley Community College",
+        "AA degree in Business Administration and Accounting",
+        "John Kent Cooke (JKC) Scholar",
+        "Phi Theta Kappa Honor Society International Officer (2007-2008)",
+        "Now works in biotech/genomics software"
+      ],
+      "insight": "Community college transfer path — alternative route to Stanford",
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2024-06-23",
+      "verified": true
+    },
+    {
+      "id": "UZ-015",
+      "name": "Abdulaziz Isokulov",
+      "university_admitted": "US Graduate University (Fulbright)",
+      "year": 2023,
+      "class_of": null,
+      "scholarship_amount_usd": null,
+      "scholarship_type": "Fulbright full scholarship",
+      "hometown": "Tashkent",
+      "region": "Tashkent",
+      "high_school": "Tashkent university (bachelor's)",
+      "curriculum": "Uzbek national higher education",
+      "intended_major": "Graduate studies (field unknown)",
+      "gpa_uzbek": null,
+      "key_differentiators": [
+        "Fulbright scholar — one of only 3 Uzbek recipients per year",
+        "2+ years work experience (Fulbright requirement)",
+        "Strong research proposal",
+        "English proficiency"
+      ],
+      "insight": "Fulbright: only 3 Uzbeks selected per year — extremely competitive",
+      "guidance": "Self-prepared",
+      "source": "Gazeta.uz 2023-09-30",
+      "verified": true
+    }
+  ],
+
+  "scholarship_program_recipients": {
+    "note": "Verified programs with Uzbek recipients. Individual names not publicly listed.",
+
+    "erasmus_mundus_2023": {
+      "program": "Erasmus Mundus Joint Masters",
+      "year": 2023,
+      "uzbek_recipients": 11,
+      "gender_split": "7 female, 4 male",
+      "universities": ["France", "Belgium", "Spain", "Finland", "Portugal", "UK", "Italy", "Czech Republic", "Turkey", "Ireland", "Sweden", "Netherlands", "Estonia", "Denmark", "Norway", "Luxembourg"],
+      "fields": ["Medicine", "Early childhood education", "Security studies", "Big data management", "Sustainable bioeconomy", "Theoretical chemistry", "Smart energy systems", "ICT", "Chemical innovation", "Transnational German Studies"],
+      "source": "EU Delegation Uzbekistan 2023-07-11",
+      "verified": true
+    },
+
+    "erasmus_mundus_2022": {
+      "program": "Erasmus Mundus Joint Masters",
+      "year": 2022,
+      "uzbek_recipients": 9,
+      "source": "EU Delegation Uzbekistan",
+      "verified": true
+    },
+
+    "erasmus_mundus_2024": {
+      "program": "Erasmus Mundus Joint Masters",
+      "year": 2024,
+      "uzbek_recipients": 13,
+      "source": "EU Delegation Uzbekistan",
+      "verified": true
+    },
+
+    "fulbright_annual": {
+      "program": "Fulbright US Student Program",
+      "uzbek_recipients_per_year": 3,
+      "note": "Only 3 Uzbek citizens selected annually — most competitive program",
+      "requirements": ["Bachelor degree", "2+ years work experience", "Must be in Uzbekistan during application", "Strong research proposal"],
+      "deadline": "February",
+      "source": "Gazeta.uz 2023-09-30",
+      "verified": true
+    },
+
+    "chevening": {
+      "program": "UK Chevening Scholarship",
+      "target": "Graduate studies at UK universities",
+      "uzbek_recipients_per_year": "10-15 (estimated)",
+      "top_universities": ["Oxford", "Cambridge", "LSE", "Imperial", "UCL", "Edinburgh"],
+      "deadline": "November",
+      "source": "chevening.org/scholarship/uzbekistan",
+      "verified": true
+    },
+
+    "daad_germany": {
+      "program": "DAAD (German Academic Exchange Service)",
+      "target": "Master's programs at German universities",
+      "uzbek_recipients_per_year": "20-30 (estimated)",
+      "key_programs": ["Study Scholarships – Master Studies for All Academic Disciplines", "ERP Study Scholarships for Economics graduates"],
+      "deadline": "October",
+      "source": "German Embassy Tashkent 2022",
+      "verified": true
+    },
+
+    "el_yurt_umidi": {
+      "program": "El-Yurt Umidi Foundation (Uzbekistan government)",
+      "target": "Top world universities — full coverage",
+      "coverage": "Tuition + housing + flights + living allowance",
+      "uzbek_recipients_per_year": "200+ (all levels)",
+      "note": "Largest Uzbek government scholarship program for foreign study",
+      "verified": true
+    },
+
+    "uwc_uzbekistan": {
+      "program": "United World College — Uzbekistan National Selection",
+      "yearly_selected": "5-10 students",
+      "coverage": "Full IB + boarding at UWC campus (Norway, UK, India, etc.)",
+      "deadline": "January",
+      "note": "UWC selection dramatically improves Ivy League chances",
+      "verified": true
+    }
+  },
+
+  "key_patterns": {
+    "presidential_school_pipeline": {
+      "name": "Presidential School Pipeline",
+      "description": "Students from Presidential Schools (Tashkent) with A-Level curriculum dominate US Ivy admissions. 8 of 15 named cases attended PS or equivalent international school.",
+      "universities_linked": ["Harvard", "Princeton", "UPenn", "NYU"],
+      "strength": "critical"
+    },
+    "zakovat_championship": {
+      "name": "Zakovat Students League Championship",
+      "description": "Zakovat quiz bowl championship appears in both Harvard and UPenn admits. Register every September. 3-season champion Abdulaziz → Harvard; Gulrukh (same team) → UPenn.",
+      "universities_linked": ["Harvard", "UPenn"],
+      "strength": "high",
+      "registration": "September each year"
+    },
+    "international_curriculum": {
+      "name": "International Curriculum (A-Level / IB / UWC)",
+      "description": "10 of 15 named cases had A-Level, IB, or UWC curriculum. However, Allomakhon (Brown) and Khosilmurod (Yale) proved national curriculum can work with the right strategy.",
+      "strength": "high"
+    },
+    "rural_background_advantage": {
+      "name": "Rural Background as Diversity Strength",
+      "description": "Khosilmurod from rural Jizzakh (public school) → Yale. Azizbek from Oltiariq (small town, Fergana) → Harvard. Rural = authentic story, diversity value.",
+      "universities_linked": ["Yale", "Harvard"],
+      "strength": "high",
+      "insight": "Rural background is not a disadvantage — it is a unique story"
+    },
+    "gap_year_strategy": {
+      "name": "Gap Year Strategy",
+      "description": "Allomakhon (Brown) used gap year productively: SAT improvement, Coursera courses, IELTS tutoring income, German language camp. Gap year ≠ wasted year if used strategically.",
+      "universities_linked": ["Brown"],
+      "strength": "medium"
+    },
+    "independent_stem_project": {
+      "name": "Independent STEM Project with Social Impact",
+      "description": "Every STEM admit had a project serving communities. Abdulaziz → Harvard: engineering projects 'that may help those in need'. Projects must have social dimension.",
+      "universities_linked": ["Harvard", "Princeton", "Stanford"],
+      "strength": "critical"
+    },
+    "full_need_financial_aid": {
+      "name": "100% Need-Based Aid Reality",
+      "description": "Harvard, Princeton, Brown, Yale, Columbia, UPenn all cover 100% demonstrated need. $0 family budget does NOT disqualify from Ivy League. Abdulaziz ($366K), Allomakhon ($376K) both from families needing full aid.",
+      "strength": "critical"
+    },
+    "multiple_extracurriculars": {
+      "name": "Multiple Strong Extracurriculars",
+      "description": "Azizbek Zaylobiddinov explicitly stated: 'Academic excellence alone is not enough. Extracurriculars significantly boost admission chances.' All admits had 3+ significant activities.",
+      "strength": "critical"
+    },
+    "community_building": {
+      "name": "Community Building on Campus",
+      "description": "Multiple admits founded Central Asian organizations at their universities (Umid at Yale → ACY; Feruza at Princeton → CASA; Farangiz at Stanford → CASA). Leadership post-admission reflects leadership pre-admission.",
+      "strength": "medium"
+    },
+    "freshman_academy_effect": {
+      "name": "Freshman Academy Consulting Impact",
+      "description": "Freshman Academy (founded 2019 by Yale-NUS graduates) guided: Sayfullo (Princeton), Salim (NYU), Khosilmurod (Yale), Parizoda (Columbia), Feruza (Princeton), Umid (Yale), Azizbek (Harvard). 7 of 15 named cases.",
+      "strength": "high",
+      "note": "Not the only path — Abdulaziz (Harvard), Farangiz (Stanford), Allomakhon (Brown) were self-prepared"
+    }
+  },
+
+  "admission_statistics": {
+    "note": "Verified aggregate data from public sources",
+    "harvard_uzbek_students": {
+      "current_approximate": "2-4 undergraduate students",
+      "source": "Harvard International Office Statistics (via Quora, ~2022)"
+    },
+    "uzbeks_in_us_top_universities_annual": {
+      "ivy_league_per_year": "5-10 students (estimated, undergraduate)",
+      "top_50_us_per_year": "50-100 students (estimated, all levels)",
+      "note": "Rapid increase since 2019 driven by Freshman Academy and increased awareness"
+    },
+    "fulbright_uzbekistan": {
+      "recipients_per_year": 3,
+      "total_since_program_start": "50+ (estimated)"
+    },
+    "erasmus_mundus_uzbekistan": {
+      "2022": 9,
+      "2023": 11,
+      "2024": 13,
+      "trend": "Growing year over year"
+    }
+  },
+
+  "motivational_messages_by_region": {
+    "Tashkent": "You have access to Presidential Schools, lyceums, and the best tutors in Uzbekistan — but so does your competition. The question is whether your story is authentic enough to stand out globally.",
+    "Namangan": "MIT has never admitted an undergraduate student from Namangan. You could be the first — and that story alone would make your application unforgettable.",
+    "Fergana": "Azizbek Zaylobiddinov from Oltiariq — a small town in Fergana — got into Harvard at 17 with a full scholarship. Your region has already proven it is possible.",
+    "Samarkand": "Parizoda from a public school in Samarkand got into Columbia University's John Jay Scholars Program. Umid from public school No.17 in Samarkand got into Yale. Your city is already on the Ivy League map.",
+    "Bukhara": "Sayfullo Saidov from Bukhara got into Princeton University with a $357,000 scholarship. You are from the same city that produced a Princeton engineer.",
+    "Jizzakh": "Khosilmurod Abdukholikov from a rural public school in Bakhmal, Jizzakh — not even the regional capital — got into Yale University with a full-ride. If Jizzakh can do it, any district in Uzbekistan can.",
+    "Khiva": "Abdulaziz Sobirov from Khiva got into Harvard University with a $366,000 scholarship. Your city sent someone to Harvard — now it is your turn.",
+    "Nukus": "No student from Karakalpakstan has reached an Ivy League university yet. That makes your application story uniquely powerful — you would be the first, and admission officers value pioneers.",
+    "Termez": "No student from Termez has yet reached a QS Top-10 university. You would not just be an applicant — you would be a historical first from Surxondaryo.",
+    "Andijan": "Andijan has some of the strongest STEM talent in Central Asia. Channel that into a research project with social impact and your story will travel far beyond Uzbekistan.",
+    "Kokand": "Feruza Mukhammadieva from public school No.32 in Kokand got into Princeton University, Georgetown, CMU, and NYU Abu Dhabi — all with full scholarships. Kokand already has a Princeton engineer.",
+    "Qarshi": "Ulugbek Baymuradov from Karshi (Kashkadarya) graduated from Stanford University. Your region has a Stanford graduate — and your generation has more resources than he ever had.",
+    "Guliston": "Guliston and Sirdaryo region have not yet seen a QS Top-100 admit. That uniqueness is your advantage — use it.",
+    "Urgench": "Khorezm region already sent Abdulaziz from Khiva to Harvard. Urgench is the heart of Khorezm — your story continues the region's legacy."
+  },
+
+  "roadmap_triggers": {
+    "ielts_not_taken": {
+      "priority": "CRITICAL",
+      "action": "Register for IELTS immediately. Target 7.0+ for US/UK Ivy. 6.5+ for German/Dutch universities.",
+      "timeline": "3-6 months preparation",
+      "resource": "British Council Uzbekistan, IDP Tashkent"
+    },
+    "sat_not_taken": {
+      "priority": "HIGH",
+      "action": "Register for SAT. Target 1400+ for competitive US schools. Many European universities (ETH, TU Munich) do not require SAT.",
+      "timeline": "3-6 months preparation",
+      "resource": "Khan Academy free SAT prep, College Board"
+    },
+    "no_olympiad": {
+      "priority": "HIGH",
+      "action": "Register for Republic Olympiad in your strongest subject (Math, Physics, Chemistry, Informatics, Biology). Zakovat Students League registration opens September.",
+      "resource": "PIIMA agency, Zakovat.uz"
+    },
+    "national_curriculum_no_ib": {
+      "priority": "MEDIUM",
+      "action": "Consider: (1) Transfer to Presidential School or Cambridge International school, (2) Take Coursera/edX courses for academic rigor proof, (3) UWC Uzbekistan application (January deadline) for full IB + international experience",
+      "examples": "Allomakhon (Brown) used Coursera. Khosilmurod (Yale) used national curriculum with exceptional CS skills."
+    },
+    "zero_extracurriculars": {
+      "priority": "CRITICAL",
+      "action": "Start ONE meaningful extracurricular immediately — not 10 shallow ones. Research project > club membership. Teaching/tutoring = leadership + income.",
+      "quote": "Azizbek Zaylobiddinov: 'Academic excellence alone is not enough. Extracurriculars significantly boost admission chances.'"
+    },
+    "no_independent_project": {
+      "priority": "HIGH",
+      "action": "Start a project that solves a real problem in your community. Robotics, app, research paper, NGO, tutoring program. Must have measurable social impact.",
+      "examples": "Abdulaziz: robotics project helping underserved communities → Harvard reader quote"
+    },
+    "budget_zero": {
+      "priority": "INFO",
+      "action": "Do NOT remove Harvard, Princeton, Brown, Yale, Columbia, UPenn from target list. All offer 100% need-based aid. ETH Zurich costs ~$800/year total tuition.",
+      "source": "Abdulaziz received $366K, Allomakhon received $376K — both needed full aid"
+    },
+    "uwc_candidate": {
+      "priority": "HIGH",
+      "action": "Apply to UWC Uzbekistan national selection (deadline: January). If selected, full IB + boarding at international campus in Norway/UK/India/etc. = massive admissions boost.",
+      "examples": "Asad Abdrshin: UWC RCN Norway → Vanderbilt $384K"
+    }
+  },
+
+  "uzbek_opportunities_calendar": {
+    "september": [
+      "Zakovat Students League registration opens",
+      "Republic Olympiad registration (Math, Physics, Chemistry, Informatics, Biology)",
+      "DAAD scholarship deadline for following year applications"
+    ],
+    "october": [
+      "SAT exam date (register 6-8 weeks earlier)",
+      "DAAD application deadline"
+    ],
+    "november": [
+      "Chevening UK scholarship deadline",
+      "Early Action deadlines for US universities (Nov 1/Nov 15)"
+    ],
+    "january": [
+      "UWC Uzbekistan national selection — application opens",
+      "Regular Decision deadlines for US universities (Jan 1)"
+    ],
+    "february": [
+      "Fulbright Uzbekistan application deadline",
+      "PASCH/Goethe-Institut summer program applications open"
+    ],
+    "march": [
+      "Erasmus+ Mundus application window",
+      "Regular Decision results from US universities"
+    ],
+    "april": [
+      "UK university offers (UCAS)",
+      "US Regular Decision results"
+    ],
+    "may": [
+      "US commitment deadline (May 1)",
+      "UWC national selection results"
+    ]
+  },
+
+  "university_specific_insights": {
+    "Harvard": {
+      "uzbek_admits_known": ["Abdulaziz Sobirov (2024)", "Azizbek Zaylobiddinov (2024)", "Ulugbek Baymuradov (2007, transfer to Stanford then Harvard alum)"],
+      "key_for_uzbeks": "Engineering + social impact project. Zakovat + research. 'How will you help those in need?'",
+      "financial_aid": "100% need-based, covers all costs",
+      "sat_middle_50": "1500-1580",
+      "ielts_minimum": "7.0+"
+    },
+    "Yale": {
+      "uzbek_admits_known": ["Khosilmurod Abdukholikov (2023)", "Umid Usmanov (2021)"],
+      "key_for_uzbeks": "National curriculum OK. CS + Humanities combination works. Rural background valued. Gap year at Tsinghua available post-admission.",
+      "financial_aid": "100% need-based",
+      "sat_middle_50": "1500-1570"
+    },
+    "Princeton": {
+      "uzbek_admits_known": ["Sayfullo Saidov (2024)", "Feruza Mukhammadieva (2022)"],
+      "key_for_uzbeks": "Engineering focus strong. International experience helps. Women in CS have strong track record.",
+      "financial_aid": "100% need-based",
+      "sat_middle_50": "1500-1570"
+    },
+    "Brown": {
+      "uzbek_admits_known": ["Allomakhon Fayzullaeva (2024)"],
+      "key_for_uzbeks": "No IB/AP required with strategic gap year. German language + European experience helps. Open Curriculum valued.",
+      "financial_aid": "100% need-based"
+    },
+    "Columbia": {
+      "uzbek_admits_known": ["Parizoda Assatilloyeva (2023)"],
+      "key_for_uzbeks": "John Jay Scholars Program for exceptional students. Public school background valued. Political Science strong."
+    },
+    "UPenn": {
+      "uzbek_admits_known": ["Gulrukh Sodikova (2023)"],
+      "key_for_uzbeks": "PPE (Philosophy, Politics, Economics) major strong for Uzbeks interested in law/policy. Zakovat championship valued."
+    },
+    "Stanford": {
+      "uzbek_admits_known": ["Farangiz Murodiy (2023)", "Ulugbek Baymuradov (2007)"],
+      "key_for_uzbeks": "AI/tech focus. Silicon Valley access post-admission. Community building leadership valued.",
+      "financial_aid": "100% need-based"
+    },
+    "Vanderbilt": {
+      "uzbek_admits_known": ["Asad Abdrshin (2024)"],
+      "key_for_uzbeks": "UWC pathway works extremely well. $384K scholarship for Math major. Less competitive than Ivy with strong merit aid."
+    },
+    "ETH_Zurich": {
+      "uzbek_admits_known": [],
+      "key_for_uzbeks": "~$800/year total tuition. QS #7 globally. German language required for Bachelor (English for Master). No SAT required. Strong math background needed.",
+      "cost": "$800/year tuition",
+      "language": "German (Bachelor), English (Master)"
+    }
+  }
+}

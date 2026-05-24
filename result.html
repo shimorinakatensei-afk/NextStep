@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Step — Анализ профиля</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:      #f7f5f0;
+            --surface: #ffffff;
+            --border:  #e8e3da;
+            --border2: #f0ece4;
+            --ink:     #1a1a1a;
+            --ink2:    #555;
+            --ink3:    #999;
+            --ink4:    #bbb;
+            --red:     #dc2626;
+            --amber:   #d97706;
+            --green:   #16a34a;
+            --blue:    #2563eb;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── HEADER ─────────────────────────────────────────────────── */
+        .top-bar {
+            max-width: 780px; margin: 0 auto;
+            padding: 20px 24px 0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 13px; font-weight: 900; letter-spacing: .12em; color: var(--ink); }
+        .step-label { font-size: 11px; color: var(--ink3); font-family: monospace; }
+
+        /* ── HERO ────────────────────────────────────────────────────── */
+        .hero {
+            max-width: 780px; margin: 0 auto;
+            padding: 32px 24px 0;
+        }
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 10px; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--ink3);
+            margin-bottom: 12px;
+        }
+        .hero-tag::before {
+            content: '';
+            display: inline-block;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--green);
+        }
+        .hero-name {
+            font-size: clamp(26px, 5vw, 38px);
+            font-weight: 900; letter-spacing: -.03em;
+            line-height: 1.1; color: var(--ink);
+        }
+        .hero-uni {
+            font-size: 14px; color: var(--ink2); margin-top: 6px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .hero-uni::before {
+            content: '→';
+            font-weight: 700; color: var(--ink3);
+        }
+
+        /* ── CHANCE STRIP ────────────────────────────────────────────── */
+        .chance-strip {
+            max-width: 780px; margin: 24px auto 0;
+            padding: 0 24px;
+            display: grid; grid-template-columns: 1fr auto 1fr; gap: 0;
+            align-items: stretch;
+        }
+        .chance-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+        }
+        .chance-card:first-child { border-radius: 16px 0 0 16px; border-right: none; }
+        .chance-card:last-child  { border-radius: 0 16px 16px 0; border-left: none; }
+        .chance-card .c-label {
+            font-size: 10px; font-weight: 700; letter-spacing: .08em;
+            text-transform: uppercase; color: var(--ink3); margin-bottom: 8px;
+        }
+        .chance-card .c-value {
+            font-size: 40px; font-weight: 900; letter-spacing: -.03em; line-height: 1;
+        }
+        .chance-card .c-sub { font-size: 11px; color: var(--ink3); margin-top: 4px; }
+        .c-now  .c-value { color: var(--red); }
+        .c-after .c-value { color: var(--green); }
+        .c-after { background: #f0fdf4; border-color: #bbf7d0; }
+
+        .chance-arrow {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 16px; min-width: 56px;
+        }
+        .arrow-icon {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--ink); display: flex; align-items: center; justify-content: center;
+        }
+
+        /* ── MAIN LAYOUT ─────────────────────────────────────────────── */
+        .main {
+            max-width: 780px; margin: 24px auto 0;
+            padding: 0 24px 60px;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        /* ── SECTION CARD ────────────────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 22px;
+        }
+        .card-tag {
+            display: inline-block;
+            font-size: 9px; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--ink3);
+            border: 1px solid var(--border); border-radius: 6px;
+            padding: 3px 8px; margin-bottom: 14px;
+            font-family: monospace;
+        }
+        .card-text {
+            font-size: 14px; color: var(--ink2); line-height: 1.7;
+        }
+
+        /* ── GAPS ────────────────────────────────────────────────────── */
+        .gap-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 14px; border-radius: 10px;
+            margin-bottom: 8px; border: 1px solid transparent;
+        }
+        .gap-item:last-child { margin-bottom: 0; }
+        .gap-item.critical { background: #fef2f2; border-color: #fecaca; }
+        .gap-item.important { background: #fffbeb; border-color: #fde68a; }
+        .gap-item.minor { background: #f0fdf4; border-color: #bbf7d0; }
+
+        .gap-badge {
+            font-size: 9px; font-weight: 700; letter-spacing: .08em;
+            text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
+            white-space: nowrap; flex-shrink: 0; margin-top: 1px;
+        }
+        .critical .gap-badge { background: #fee2e2; color: #991b1b; }
+        .important .gap-badge { background: #fef3c7; color: #92400e; }
+        .minor .gap-badge { background: #dcfce7; color: #166534; }
+
+        .gap-body .gap-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+        .gap-body .gap-desc  { font-size: 12px; color: var(--ink2); margin-top: 3px; line-height: 1.5; }
+
+        /* ── COMPARABLE CASE ─────────────────────────────────────────── */
+        .case-card {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 16px; padding: 18px 22px;
+            display: flex; gap: 14px; align-items: flex-start;
+        }
+        .case-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: #2563eb; color: #fff; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 900;
+        }
+        .case-label { font-size: 10px; font-weight: 700; letter-spacing: .08em;
+            text-transform: uppercase; color: #2563eb; margin-bottom: 5px; }
+        .case-text { font-size: 13px; color: #1e40af; line-height: 1.6; }
+
+        /* ── ROADMAP ─────────────────────────────────────────────────── */
+        .roadmap-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .roadmap-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid var(--border2);
+        }
+        .roadmap-title {
+            font-size: 9px; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--ink3); font-family: monospace;
+        }
+        .roadmap-steps-label {
+            font-size: 9px; color: var(--ink4); font-family: monospace;
+        }
+
+        /* Progress bar */
+        .rm-progress {
+            display: flex; align-items: center;
+            padding: 0 20px 0;
+            gap: 0; margin-bottom: 0;
+        }
+        .rm-progress-dot {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ink); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 800; flex-shrink: 0;
+            position: relative; z-index: 2;
+        }
+        .rm-progress-line {
+            flex: 1; height: 2px; background: var(--border);
+        }
+        .rm-progress-month {
+            position: absolute; top: 34px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 8.5px; font-family: monospace;
+            color: var(--ink4); white-space: nowrap;
+        }
+
+        /* Cards grid */
+        .rm-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+        @media (max-width: 640px) {
+            .rm-grid { grid-template-columns: 1fr; }
+        }
+
+        .rm-card {
+            border-right: 1px solid var(--border2);
+            padding: 0;
+            display: flex; flex-direction: column;
+            position: relative;
+            transition: background .15s;
+        }
+        .rm-card:last-child { border-right: none; }
+        .rm-card:hover { background: #fafaf8; }
+
+        /* Coloured top strip */
+        .rm-strip {
+            height: 4px; width: 100%;
+        }
+        .strip-1 { background: #6366f1; }
+        .strip-2 { background: #f59e0b; }
+        .strip-3 { background: #10b981; }
+
+        .rm-card-inner { padding: 18px 18px 16px; flex: 1; display: flex; flex-direction: column; }
+
+        .rm-card-head {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 6px;
+            margin-bottom: 14px;
+        }
+        .rm-month-badge {
+            display: flex; flex-direction: column;
+        }
+        .rm-month-num {
+            font-size: 11px; font-weight: 900; color: var(--ink);
+            letter-spacing: -.01em;
+        }
+        .rm-month-label {
+            font-size: 9px; color: var(--ink4);
+            font-family: monospace; margin-top: 1px;
+        }
+        .rm-diff {
+            font-size: 9px; font-weight: 700; letter-spacing: .06em;
+            text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
+            white-space: nowrap;
+        }
+        .diff-easy   { background: #dcfce7; color: #166534; }
+        .diff-medium { background: #fef3c7; color: #92400e; }
+        .diff-hard   { background: #fee2e2; color: #991b1b; }
+
+        .rm-card-title {
+            font-size: 15px; font-weight: 800; color: var(--ink);
+            line-height: 1.25; margin-bottom: 10px; letter-spacing: -.01em;
+        }
+
+        .rm-card-task {
+            font-size: 12.5px; color: var(--ink2); line-height: 1.65;
+            margin-bottom: 12px; flex: 1;
+        }
+
+        .rm-card-why {
+            font-size: 11.5px; color: var(--ink3); line-height: 1.55;
+            padding: 9px 11px;
+            background: var(--bg); border-radius: 8px;
+            border-left: 2px solid var(--border);
+            margin-bottom: 14px;
+        }
+
+        .rm-card-footer {
+            border-top: 1px solid var(--border2);
+            padding-top: 12px;
+            display: flex; flex-direction: column; gap: 7px;
+        }
+        .rm-foot-row {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 11px; color: var(--ink3);
+        }
+        .rm-foot-row svg { flex-shrink: 0; opacity: .6; }
+        .rm-foot-row strong { color: var(--ink2); font-weight: 600; }
+        .rm-foot-row a {
+            color: var(--blue); text-decoration: none;
+            font-weight: 500; word-break: break-all;
+        }
+        .rm-foot-row a:hover { text-decoration: underline; }
+
+        /* Connector row between header and cards */
+        .rm-connector {
+            display: grid; grid-template-columns: repeat(3,1fr);
+            padding: 16px 20px 4px; gap: 0; align-items: center;
+        }
+        @media (max-width: 640px) { .rm-connector { display: none; } }
+
+        .rm-conn-item {
+            display: flex; align-items: center; gap: 0;
+            position: relative;
+        }
+        .rm-conn-dot {
+            width: 24px; height: 24px; border-radius: 50%;
+            color: #fff; font-size: 10px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; z-index: 2;
+        }
+        .dot-1 { background: #6366f1; }
+        .dot-2 { background: #f59e0b; }
+        .dot-3 { background: #10b981; }
+        .rm-conn-line {
+            flex: 1; height: 1.5px; background: var(--border);
+            margin: 0 0 0 0;
+        }
+        .rm-conn-text {
+            position: absolute; left: 30px; top: -3px;
+            font-size: 9px; font-family: monospace; color: var(--ink4);
+            white-space: nowrap;
+        }
+
+        /* ── FUNDING ─────────────────────────────────────────────────── */
+        .funding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 480px) { .funding-grid { grid-template-columns: 1fr; } }
+
+        .funding-item {
+            background: var(--bg); border: 1px solid var(--border2);
+            border-radius: 10px; padding: 12px 14px;
+        }
+        .funding-name { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+        .funding-desc { font-size: 11px; color: var(--ink3); line-height: 1.5; }
+
+        /* ── MOTIVATIONAL ────────────────────────────────────────────── */
+        .motivation-card {
+            background: var(--ink); border-radius: 16px;
+            padding: 28px 28px; text-align: center; position: relative; overflow: hidden;
+        }
+        .motivation-card::before {
+            content: '"';
+            position: absolute; top: -20px; left: 16px;
+            font-size: 140px; font-weight: 900; color: rgba(255,255,255,.04);
+            line-height: 1; pointer-events: none;
+        }
+        .motivation-label {
+            font-size: 9px; font-weight: 700; letter-spacing: .12em;
+            text-transform: uppercase; color: rgba(255,255,255,.35);
+            font-family: monospace; margin-bottom: 12px;
+        }
+        .motivation-text {
+            font-size: clamp(14px, 2.5vw, 17px);
+            font-weight: 600; color: #fff;
+            line-height: 1.65; letter-spacing: -.01em;
+        }
+
+        /* ── ACTIONS ─────────────────────────────────────────────────── */
+        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 480px) { .actions { grid-template-columns: 1fr; } }
+
+        .btn {
+            height: 44px; border-radius: 11px; font-size: 13px; font-weight: 600;
+            cursor: pointer; border: none; transition: all .15s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-outline {
+            background: transparent; border: 1.5px solid var(--border);
+            color: var(--ink2);
+        }
+        .btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+        .btn-primary { background: var(--ink); color: #fff; }
+        .btn-primary:hover { background: #333; }
+        .btn-primary:active, .btn-outline:active { transform: scale(.98); }
+
+        /* ── FOOTER ──────────────────────────────────────────────────── */
+        footer {
+            text-align: center; font-size: 10px; font-family: monospace;
+            color: var(--ink4); padding: 0 0 20px;
+        }
+
+        /* ── RESPONSIVE ──────────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            .chance-strip { grid-template-columns: 1fr 40px 1fr; }
+            .chance-card  { padding: 14px 16px; }
+            .chance-card .c-value { font-size: 30px; }
+            .chance-arrow { padding: 0 8px; min-width: 40px; }
+            .arrow-icon   { width: 24px; height: 24px; }
+        }
+
+        /* ── PRINT ───────────────────────────────────────────────────── */
+        @media print {
+            body { background: #fff; }
+            .actions, footer { display: none; }
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+        .fade { animation: fadeUp .45s ease both; }
+        .fade-2 { animation: fadeUp .45s .08s ease both; }
+        .fade-3 { animation: fadeUp .45s .16s ease both; }
+        .fade-4 { animation: fadeUp .45s .24s ease both; }
+    
+        /* ── AI CHAT ─────────────────────────────────────────────────── */
+        .chat-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .chat-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border2);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .chat-header-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34,197,94,0.2);
+        }
+        .chat-header-title {
+            font-size: 13px; font-weight: 700; color: var(--ink);
+        }
+        .chat-header-sub {
+            font-size: 11px; color: var(--ink3); margin-left: auto;
+        }
+
+        .chat-suggested {
+            padding: 14px 16px 10px;
+            display: flex; flex-wrap: wrap; gap: 6px;
+            border-bottom: 1px solid var(--border2);
+        }
+        .chat-pill {
+            font-size: 11.5px; padding: 5px 12px;
+            border-radius: 20px; border: 1px solid var(--border);
+            background: var(--bg); color: var(--ink2);
+            cursor: pointer; transition: all .15s;
+            white-space: nowrap;
+        }
+        .chat-pill:hover { border-color: var(--ink); color: var(--ink); }
+
+        .chat-messages {
+            padding: 16px; min-height: 120px;
+            max-height: 400px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .chat-messages::-webkit-scrollbar { width: 3px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .chat-bubble {
+            max-width: 85%; display: flex; gap: 8px; align-items: flex-start;
+        }
+        .chat-bubble.user { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-bubble.ai   { align-self: flex-start; }
+
+        .bubble-avatar {
+            width: 26px; height: 26px; border-radius: 50%;
+            flex-shrink: 0; display: flex; align-items: center;
+            justify-content: center; font-size: 10px; font-weight: 800;
+        }
+        .bubble-avatar.ai-av   { background: var(--ink); color: #fff; }
+        .bubble-avatar.user-av { background: var(--border); color: var(--ink2); }
+
+        .bubble-text {
+            padding: 9px 13px; border-radius: 12px;
+            font-size: 13px; line-height: 1.6;
+        }
+        .chat-bubble.user .bubble-text {
+            background: var(--ink); color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-bubble.ai .bubble-text {
+            background: var(--bg); color: var(--ink2);
+            border: 1px solid var(--border2);
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots span {
+            display: inline-block; width: 5px; height: 5px;
+            border-radius: 50%; background: var(--ink3); margin: 0 1px;
+            animation: typingBounce .9s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: .15s; }
+        .typing-dots span:nth-child(3) { animation-delay: .3s; }
+        @keyframes typingBounce {
+            0%,60%,100% { transform: translateY(0); }
+            30%          { transform: translateY(-5px); }
+        }
+
+        .chat-input-row {
+            display: flex; gap: 8px; padding: 12px 16px;
+            border-top: 1px solid var(--border2);
+        }
+        .chat-input {
+            flex: 1; height: 40px; padding: 0 14px;
+            background: var(--bg); border: 1.5px solid var(--border);
+            border-radius: 10px; font-size: 13px; color: var(--ink);
+            font-family: inherit; outline: none; transition: border-color .15s;
+        }
+        .chat-input:focus { border-color: var(--ink); }
+        .chat-input::placeholder { color: var(--ink4); }
+        .chat-send {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: var(--ink); border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: background .15s;
+        }
+        .chat-send:hover { background: #333; }
+        .chat-send:disabled { background: var(--border); cursor: not-allowed; }
+        .chat-send svg { color: #fff; }
+
+        </style>
+</head>
+<body>
+
+    <div class="top-bar fade">
+        <span class="logo">NEXT STEP</span>
+        <span class="step-label">Шаг 3 / 3 — Анализ профиля</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero fade-2">
+        <div class="hero-tag">Gap Analysis · AI результат</div>
+        <h1 class="hero-name" id="resName">—</h1>
+        <p class="hero-uni" id="resTarget">—</p>
+    </div>
+
+    <!-- CHANCE STRIP -->
+    <div class="chance-strip fade-2">
+        <div class="chance-card c-now">
+            <div class="c-label">Шанс сейчас</div>
+            <div class="c-value" id="chanceNow">—</div>
+            <div class="c-sub">без плана</div>
+        </div>
+        <div class="chance-arrow">
+            <div class="arrow-icon">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                </svg>
+            </div>
+        </div>
+        <div class="chance-card c-after">
+            <div class="c-label">После плана</div>
+            <div class="c-value" id="chanceAfter">—</div>
+            <div class="c-sub">через 3 месяца</div>
+        </div>
+    </div>
+
+    <div class="main">
+
+        <!-- SUMMARY -->
+        <div class="card fade-3">
+            <div class="card-tag">Экспертное заключение</div>
+            <p class="card-text" id="profileSummary"></p>
+        </div>
+
+        <!-- GAPS -->
+        <div class="card fade-3">
+            <div class="card-tag">Ключевые пробелы профиля</div>
+            <div id="gapsContainer"></div>
+        </div>
+
+        <!-- COMPARABLE CASE -->
+        <div class="case-card fade-3">
+            <div class="case-icon">UZ</div>
+            <div>
+                <div class="case-label">Похожий кейс из Узбекистана</div>
+                <p class="case-text" id="comparableCase"></p>
+            </div>
+        </div>
+
+        <!-- ROADMAP -->
+        <div class="fade-4 roadmap-wrap">
+            <div class="roadmap-header">
+                <span class="roadmap-title">Пошаговый план · 3 месяца</span>
+                <span class="roadmap-steps-label">3 этапа</span>
+            </div>
+            <div class="rm-connector" id="rmConnector"></div>
+            <div class="rm-grid" id="roadmapTimeline"></div>
+        </div>
+
+        <!-- FUNDING -->
+        <div class="card fade-4">
+            <div class="card-tag">Финансовые возможности · Узбекистан</div>
+            <div class="funding-grid">
+                <div class="funding-item">
+                    <div class="funding-name">Фонд «Эл-юрт умиди»</div>
+                    <div class="funding-desc">Полное покрытие обучения, проживания и перелёта для одарённых студентов.</div>
+                </div>
+                <div class="funding-item">
+                    <div class="funding-name">Государственные гранты</div>
+                    <div class="funding-desc">Целевые субсидии финалистам республиканских и международных олимпиад.</div>
+                </div>
+                <div class="funding-item">
+                    <div class="funding-name">Harvard / MIT / Princeton</div>
+                    <div class="funding-desc">Покрывают 100% подтверждённой финансовой нужды. $0 бюджет — не проблема.</div>
+                </div>
+                <div class="funding-item">
+                    <div class="funding-name">ETH Zurich</div>
+                    <div class="funding-desc">~$800 в год суммарно. QS Top-7 по инженерии. Дешевле месяца репетиторства.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOTIVATION -->
+        <div class="motivation-card fade-4">
+            <div class="motivation-label">Next Step · Персональный инсайт</div>
+            <p class="motivation-text" id="motivationalInsight"></p>
+        </div>
+
+        <!-- AI CHAT -->
+        <div class="chat-section fade-4" id="chat-section">
+            <div class="chat-header">
+                <div class="chat-header-dot"></div>
+                <span class="chat-header-title">Next Step AI — Советник</span>
+                <span class="chat-header-sub">Задай любой вопрос о своём плане</span>
+            </div>
+            <div class="chat-suggested" id="chat-suggested">
+                <button class="chat-pill" onclick="sendPill(this)">Как улучшить мои шансы?</button>
+                <button class="chat-pill" onclick="sendPill(this)">Что важнее — SAT или IELTS?</button>
+                <button class="chat-pill" onclick="sendPill(this)">Расскажи про стипендии</button>
+                <button class="chat-pill" onclick="sendPill(this)">Что делать если нет олимпиад?</button>
+                <button class="chat-pill" onclick="sendPill(this)">Реальны ли мои шансы?</button>
+            </div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input-row">
+                <input id="chat-input" class="chat-input" placeholder="Спроси что-нибудь о своём роадмапе..." autocomplete="off">
+                <button id="chat-send" class="chat-send" onclick="sendChat()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12zm0 0h7.5"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="actions fade-4">
+            <button class="btn btn-outline" onclick="window.location.href='/'">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Начать заново
+            </button>
+            <button class="btn btn-primary" onclick="window.print()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2m2 4h6a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2zm1-4h4v6H9v-6z"/>
+                </svg>
+                Сохранить PDF
+            </button>
+        </div>
+
+    </div>
+
+    <footer>Next Step · CED28 Hackathon · 2026</footer>
+
+    <script src="result.js"></script>
+</body>
+</html>

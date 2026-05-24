@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Step — Профиль студента</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #f7f5f0; --surface: #fff;
+            --border: #e8e3da; --border2: #f0ece4;
+            --ink: #1a1a1a; --ink2: #555; --ink3: #888; --ink4: #bbb;
+            --blue: #2563eb;
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh; color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── HEADER ── */
+        header {
+            max-width: 720px; margin: 0 auto;
+            padding: 20px 24px 0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 13px; font-weight: 900; letter-spacing: .12em; }
+        .step-dots { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; }
+        .dot.on  { background: var(--ink); }
+        .dot.off { background: var(--border); }
+        .dash { width: 18px; height: 1.5px; border-radius: 1px; }
+        .dash.on  { background: var(--ink); }
+        .dash.off { background: var(--border); }
+
+        /* ── HERO ── */
+        .hero { max-width: 720px; margin: 0 auto; padding: 28px 24px 0; }
+        .hero-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .badge {
+            font-size: 11px; padding: 4px 10px; border-radius: 20px;
+            background: rgba(37,99,235,.07); border: 1px solid rgba(37,99,235,.18);
+            color: #1d4ed8;
+        }
+        .hero h1 {
+            font-size: clamp(22px,4vw,32px); font-weight: 900;
+            letter-spacing: -.02em; line-height: 1.15;
+        }
+        .hero p { font-size: 14px; color: var(--ink3); margin-top: 8px; line-height: 1.6; }
+
+        /* ── FORM ── */
+        .form-wrap { max-width: 720px; margin: 24px auto 60px; padding: 0 24px; }
+
+        /* Section card */
+        .section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px; padding: 22px 22px 20px;
+            margin-bottom: 14px;
+        }
+        .section-label {
+            font-size: 9px; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--ink3);
+            font-family: monospace; margin-bottom: 18px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-label::after {
+            content: ''; flex: 1; height: 1px; background: var(--border2);
+        }
+
+        /* Field */
+        .field-row { margin-bottom: 16px; }
+        .field-row:last-child { margin-bottom: 0; }
+        .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        @media(max-width:560px) {
+            .field-grid-2 { grid-template-columns: 1fr; }
+            .field-grid-3 { grid-template-columns: 1fr 1fr; }
+        }
+
+        label.lbl {
+            display: block; font-size: 11px; font-weight: 700;
+            letter-spacing: .06em; text-transform: uppercase;
+            color: var(--ink3); margin-bottom: 7px;
+        }
+        label.lbl span { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--ink4); }
+
+        .inp {
+            width: 100%; height: 42px; padding: 0 13px;
+            background: var(--bg); border: 1.5px solid var(--border);
+            border-radius: 10px; font-size: 13.5px; color: var(--ink);
+            font-family: inherit; outline: none; transition: border-color .15s, box-shadow .15s;
+            appearance: none;
+        }
+        .inp:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(26,26,26,.06); }
+        .inp::placeholder { color: var(--ink4); }
+        textarea.inp { height: 80px; padding: 11px 13px; resize: none; line-height: 1.6; }
+        select.inp {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%23999' stroke-width='2'%3E%3Cpath stroke-linecap='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+
+        /* GPA toggle */
+        .gpa-toggle {
+            display: flex; gap: 0; margin-bottom: 14px;
+            border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden;
+        }
+        .gpa-toggle button {
+            flex: 1; height: 36px; border: none; cursor: pointer;
+            font-size: 12px; font-weight: 600; font-family: inherit;
+            background: transparent; color: var(--ink3); transition: all .15s;
+        }
+        .gpa-toggle button.active { background: var(--ink); color: #fff; }
+        .gpa-toggle button:first-child { border-right: 1px solid var(--border); }
+
+        /* Slider */
+        .slider-wrap { padding: 4px 0; }
+        input[type=range] {
+            width: 100%; height: 4px; appearance: none;
+            background: var(--border); border-radius: 4px; outline: none; cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none; width: 18px; height: 18px;
+            border-radius: 50%; background: var(--ink);
+            border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .slider-labels { display: flex; justify-content: space-between; margin-top: 5px; }
+        .slider-labels span { font-size: 10px; color: var(--ink4); font-family: monospace; }
+        .gpa-val {
+            font-size: 13px; font-weight: 700; font-family: monospace;
+            color: var(--blue); background: rgba(37,99,235,.08);
+            padding: 2px 8px; border-radius: 6px;
+        }
+        .subject-gpa-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; margin-top: 4px;
+        }
+        @media(max-width:480px) { .subject-gpa-grid { grid-template-columns: 1fr; } }
+        .subj-item { display: flex; flex-direction: column; gap: 4px; }
+        .subj-name { font-size: 11px; font-weight: 600; color: var(--ink2);
+            display: flex; justify-content: space-between; }
+
+        /* Radio buttons */
+        .radio-group { display: flex; flex-direction: column; gap: 6px; }
+        .radio-opt {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 12px; border-radius: 9px;
+            border: 1.5px solid var(--border); cursor: pointer;
+            transition: all .12s; font-size: 13px; color: var(--ink2);
+        }
+        .radio-opt:hover { border-color: var(--ink); }
+        .radio-opt.sel { border-color: var(--ink); background: rgba(26,26,26,.04); color: var(--ink); font-weight: 600; }
+        .radio-opt input { accent-color: var(--ink); }
+
+        /* Budget buttons */
+        .budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        @media(max-width:480px) { .budget-grid { grid-template-columns: 1fr; } }
+        .budget-btn {
+            padding: 10px 12px; border-radius: 9px;
+            border: 1.5px solid var(--border); cursor: pointer;
+            background: transparent; font-family: inherit;
+            font-size: 12.5px; text-align: left; color: var(--ink2);
+            transition: all .12s; line-height: 1.4;
+        }
+        .budget-btn.sel { border-color: var(--ink); background: rgba(26,26,26,.04); color: var(--ink); font-weight: 600; }
+        .budget-btn .budget-label { font-weight: 700; display: block; font-size: 12px; margin-bottom: 1px; }
+        .budget-btn .budget-sub   { font-size: 10.5px; color: var(--ink3); }
+        .budget-btn.sel .budget-sub { color: var(--ink2); }
+
+        /* Hint */
+        .hint { font-size: 11px; color: var(--ink4); margin-top: 5px; line-height: 1.5; }
+
+        /* Submit */
+        .submit-btn {
+            width: 100%; height: 48px;
+            background: var(--ink); color: #fff;
+            font-weight: 700; font-size: 14px;
+            border: none; border-radius: 12px;
+            cursor: pointer; letter-spacing: .02em;
+            transition: background .15s, transform .1s;
+            font-family: inherit;
+        }
+        .submit-btn:hover { background: #333; }
+        .submit-btn:active { transform: scale(.98); }
+
+        footer { text-align: center; font-size: 10px; font-family: monospace;
+            color: var(--ink4); padding-bottom: 20px; }
+
+        @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+        .fade { animation: fadeUp .4s ease both; }
+        .fade-2 { animation: fadeUp .4s .07s ease both; }
+        .fade-3 { animation: fadeUp .4s .14s ease both; }
+    </style>
+</head>
+<body>
+
+<header class="fade">
+    <span class="logo">NEXT STEP</span>
+    <div class="step-dots">
+        <div class="dot on"></div>
+        <div class="dash on"></div>
+        <div class="dot off"></div>
+        <div class="dash off"></div>
+        <div class="dot off"></div>
+    </div>
+</header>
+
+<div class="hero fade-2">
+    <div class="hero-badges">
+        <span class="badge">Harvard · Abdulaziz, Хива</span>
+        <span class="badge">Yale · Хосилмурод, Джизак</span>
+        <span class="badge">Brown · Алломахон, Ташкент</span>
+    </div>
+    <h1>Расскажи о себе</h1>
+    <p>Чем подробнее профиль — тем точнее роадмап. ИИ сравнит тебя с реальными случаями узбекских студентов в Ivy League.</p>
+</div>
+
+<div class="form-wrap fade-3">
+<form id="profileForm">
+
+    <!-- 1. ЛИЧНОЕ -->
+    <div class="section">
+        <div class="section-label">Личная информация</div>
+
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="name">Имя</label>
+                <input class="inp" type="text" id="name" placeholder="Azizbek" required autocomplete="off">
+            </div>
+            <div>
+                <label class="lbl" for="city">Город / Район</label>
+                <select class="inp" id="city">
+                    <option value="Tashkent">Ташкент</option>
+                    <option value="Fergana">Фергана</option>
+                    <option value="Samarkand">Самарканд</option>
+                    <option value="Bukhara">Бухара</option>
+                    <option value="Namangan">Наманган</option>
+                    <option value="Andijan">Андижан</option>
+                    <option value="Jizzakh">Джизак</option>
+                    <option value="Khiva">Хива</option>
+                    <option value="Nukus">Нукус</option>
+                    <option value="Termez">Термез</option>
+                    <option value="Kokand">Коканд</option>
+                    <option value="Qarshi">Карши</option>
+                    <option value="Urgench">Ургенч</option>
+                    <option value="Guliston">Гулистон</option>
+                    <option value="Other">Другой</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="grade">Класс</label>
+                <select class="inp" id="grade">
+                    <option value="8">8 класс</option>
+                    <option value="9">9 класс</option>
+                    <option value="10">10 класс</option>
+                    <option value="11">11 класс — Выпускник</option>
+                    <option value="gap">Gap year (после школы)</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="school_type">Тип школы</label>
+                <select class="inp" id="school_type">
+                    <option value="presidential">Президентская школа</option>
+                    <option value="lyceum_uwed">Академический лицей (UWED, ТашГТУ и др.)</option>
+                    <option value="cambridge">Кембриджская международная школа</option>
+                    <option value="uwc">UWC (United World College)</option>
+                    <option value="private">Частная школа (без IB/A-Level)</option>
+                    <option value="public">Обычная государственная школа</option>
+                    <option value="other">Другое</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="curriculum">Учебная программа</label>
+                <select class="inp" id="curriculum">
+                    <option value="a_level">A-Level</option>
+                    <option value="ib">IB Diploma Programme</option>
+                    <option value="national">Национальная программа Узбекистана</option>
+                    <option value="cambridge_igcse">Cambridge IGCSE</option>
+                    <option value="ap">AP Courses (Advanced Placement)</option>
+                    <option value="mixed">Смешанная</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="target_major">Целевая специальность</label>
+                <select class="inp" id="target_major">
+                    <option value="cs_engineering">Computer Science / Engineering</option>
+                    <option value="math_physics">Mathematics / Physics</option>
+                    <option value="medicine">Medicine / Biology</option>
+                    <option value="economics">Economics / Finance</option>
+                    <option value="politics_law">Politics / Law / International Relations</option>
+                    <option value="business">Business / Management</option>
+                    <option value="humanities">Humanities (History, Philosophy, Literature)</option>
+                    <option value="design_arts">Design / Architecture / Arts</option>
+                    <option value="chemistry">Chemistry / Chemical Engineering</option>
+                    <option value="undecided">Ещё не решил(а)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. АКАДЕМИЧЕСКИЕ РЕЗУЛЬТАТЫ -->
+    <div class="section">
+        <div class="section-label">Академические результаты</div>
+
+        <!-- GPA toggle -->
+        <div class="field-row">
+            <label class="lbl">GPA <span>— выбери формат</span></label>
+            <div class="gpa-toggle">
+                <button type="button" id="gpa-overall-btn" class="active" onclick="setGpaMode('overall')">Общий GPA</button>
+                <button type="button" id="gpa-subjects-btn" onclick="setGpaMode('subjects')">По предметам</button>
+            </div>
+
+            <!-- Overall GPA -->
+            <div id="gpa-overall-block">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:12px;color:var(--ink2)">Средний балл (узбекская 5-балльная шкала)</span>
+                    <span class="gpa-val" id="gpaVal">4.5</span>
+                </div>
+                <div class="slider-wrap">
+                    <input type="range" id="gpa_uzbek" min="2" max="5" step="0.1" value="4.5">
+                    <div class="slider-labels"><span>2.0 — Слабо</span><span>3.5 — Хорошо</span><span>5.0 — Отлично</span></div>
+                </div>
+            </div>
+
+            <!-- Subject GPAs -->
+            <div id="gpa-subjects-block" style="display:none">
+                <div class="subject-gpa-grid" id="subject-gpa-grid">
+                    <!-- rendered by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Class rank -->
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="class_rank">Место в классе <span>(необязательно)</span></label>
+                <select class="inp" id="class_rank">
+                    <option value="unknown">Не знаю</option>
+                    <option value="top5">Топ 5% класса</option>
+                    <option value="top10">Топ 10%</option>
+                    <option value="top25">Топ 25%</option>
+                    <option value="top50">Топ 50%</option>
+                    <option value="below50">Ниже среднего</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="study_hours">Учёба в день <span>(часов)</span></label>
+                <select class="inp" id="study_hours">
+                    <option value="1-2">1–2 часа</option>
+                    <option value="3-4">3–4 часа</option>
+                    <option value="5-6">5–6 часов</option>
+                    <option value="7+">7+ часов</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. ТЕСТЫ -->
+    <div class="section">
+        <div class="section-label">Языковые и стандартизированные тесты</div>
+
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="ielts_score">IELTS / TOEFL</label>
+                <select class="inp" id="ielts_score">
+                    <option value="not_taken">Ещё не сдавал(а)</option>
+                    <option value="preparing">Готовлюсь сейчас</option>
+                    <option value="below_6">Сдал(а) — ниже 6.0</option>
+                    <option value="6.0_6.5">6.0 — 6.5</option>
+                    <option value="7.0_7.5">7.0 — 7.5</option>
+                    <option value="8.0_plus">8.0+ (Топ-уровень)</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="sat_score">SAT / ACT</label>
+                <select class="inp" id="sat_score">
+                    <option value="not_taken">Не сдавал(а)</option>
+                    <option value="preparing">Готовлюсь</option>
+                    <option value="below_1200">SAT ниже 1200</option>
+                    <option value="1200_1350">SAT 1200–1350</option>
+                    <option value="1350_1450">SAT 1350–1450</option>
+                    <option value="1450_plus">SAT 1450+ (Ivy уровень)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field-grid-3">
+            <div>
+                <label class="lbl" for="russian_level">Русский язык</label>
+                <select class="inp" id="russian_level">
+                    <option value="native">Родной</option>
+                    <option value="fluent">Свободный</option>
+                    <option value="intermediate">Средний</option>
+                    <option value="basic">Базовый</option>
+                    <option value="none">Нет</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="german_level">Немецкий</label>
+                <select class="inp" id="german_level">
+                    <option value="none">Нет</option>
+                    <option value="a1_a2">A1–A2 (начало)</option>
+                    <option value="b1_b2">B1–B2 (средний)</option>
+                    <option value="c1_plus">C1+ (продвинутый)</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="other_lang">Другой язык</label>
+                <input class="inp" type="text" id="other_lang" placeholder="Корейский, Китайский...">
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. ДОСТИЖЕНИЯ -->
+    <div class="section">
+        <div class="section-label">Олимпиады и конкурсы</div>
+
+        <div class="field-row">
+            <label class="lbl" for="olympiads">Олимпиады и результаты</label>
+            <textarea class="inp" id="olympiads" rows="3"
+                placeholder="Пример: Республиканская олимпиада по математике — 2-е место (2024), Zakovat Students League — региональный этап (2023), ISCO международная олимпиада — участник"></textarea>
+            <div class="hint">Укажи название, уровень (районный / областной / республиканский / международный) и результат</div>
+        </div>
+
+        <div class="field-row">
+            <label class="lbl" for="extracurriculars">Внеклассные активности</label>
+            <textarea class="inp" id="extracurriculars" rows="3"
+                placeholder="Пример: Робототехника — лидер команды (2 года), школьная газета — редактор, волонтёрство в детском доме (6 мес.), CodeFirst программирование — ментор для 8-классников"></textarea>
+            <div class="hint">Отдельно от олимпиад — клубы, проекты, лидерские роли, хобби</div>
+        </div>
+
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="work_experience">Работа / Стажировка</label>
+                <select class="inp" id="work_experience">
+                    <option value="none">Нет опыта</option>
+                    <option value="tutoring">Репетиторство / преподавание</option>
+                    <option value="internship">Стажировка в компании</option>
+                    <option value="research">Исследовательская работа с профессором</option>
+                    <option value="startup">Свой проект / стартап</option>
+                    <option value="freelance">Фриланс</option>
+                    <option value="other_work">Другое</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="independent_project">Независимый проект</label>
+                <select class="inp" id="independent_project">
+                    <option value="none">Нет</option>
+                    <option value="idea">Есть идея, ещё не начал(а)</option>
+                    <option value="started">В процессе</option>
+                    <option value="completed">Завершён</option>
+                    <option value="published">Опубликован / задокументирован</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="leadership">Лидерская роль</label>
+                <select class="inp" id="leadership">
+                    <option value="none">Нет</option>
+                    <option value="class_leader">Лидер класса / старosta</option>
+                    <option value="club_head">Президент клуба / кружка</option>
+                    <option value="team_captain">Капитан команды</option>
+                    <option value="founder">Основатель организации</option>
+                    <option value="mentor">Ментор / наставник</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="international_exp">Международный опыт</label>
+                <select class="inp" id="international_exp">
+                    <option value="none">Нет</option>
+                    <option value="summer_camp">Летний лагерь за рубежом</option>
+                    <option value="exchange">Обменная программа (FLEX и др.)</option>
+                    <option value="competition">Международный конкурс / олимпиада</option>
+                    <option value="lived_abroad">Жил(а) за рубежом</option>
+                    <option value="multiple">Несколько программ</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ФИНАНСЫ -->
+    <div class="section">
+        <div class="section-label">Финансовые возможности</div>
+
+        <div class="field-row">
+            <label class="lbl">Бюджет семьи на образование в год</label>
+            <div class="budget-grid" id="budget-grid">
+                <button type="button" class="budget-btn sel" data-val="0" onclick="selectBudget(this)">
+                    <span class="budget-label">$0 — Нужна полная стипендия</span>
+                    <span class="budget-sub">Harvard/MIT/Princeton покрывают 100% нужды</span>
+                </button>
+                <button type="button" class="budget-btn" data-val="1000" onclick="selectBudget(this)">
+                    <span class="budget-label">До $1,000 в год</span>
+                    <span class="budget-sub">ETH Zurich — $800/год, отличный вариант</span>
+                </button>
+                <button type="button" class="budget-btn" data-val="5000" onclick="selectBudget(this)">
+                    <span class="budget-label">$1,000 – $5,000 в год</span>
+                    <span class="budget-sub">Германия, Нидерланды, стипендии</span>
+                </button>
+                <button type="button" class="budget-btn" data-val="unlimited" onclick="selectBudget(this)">
+                    <span class="budget-label">Семья покрывает обучение</span>
+                    <span class="budget-sub">Полный выбор университетов</span>
+                </button>
+            </div>
+            <input type="hidden" id="budget_raw" value="0">
+        </div>
+
+        <div class="field-row">
+            <label class="lbl" for="first_gen">Первый в семье в университете?</label>
+            <select class="inp" id="first_gen">
+                <option value="no">Нет — родители с высшим образованием</option>
+                <option value="yes_uzbek">Да — первый с зарубежным дипломом</option>
+                <option value="yes_any">Да — первый с любым университетским дипломом</option>
+            </select>
+            <div class="hint">Первое поколение в семье — это дополнительный плюс в западных приёмных комиссиях</div>
+        </div>
+    </div>
+
+    <!-- 6. ПЛАНЫ -->
+    <div class="section">
+        <div class="section-label">Планы и дополнительно</div>
+
+        <div class="field-grid-2">
+            <div>
+                <label class="lbl" for="application_year">Когда подаёшь документы?</label>
+                <select class="inp" id="application_year">
+                    <option value="2025">Уже в этом году (2025)</option>
+                    <option value="2026">В 2026 году</option>
+                    <option value="2027">В 2027 году</option>
+                    <option value="2028+">В 2028 и позже</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl" for="guidance_source">Откуда узнал(а) о нас?</label>
+                <select class="inp" id="guidance_source">
+                    <option value="social_media">Соцсети</option>
+                    <option value="friend">Друг / знакомый</option>
+                    <option value="school">Школа / учитель</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="other">Другое</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field-row">
+            <label class="lbl" for="additional_info">Что ещё важно знать о тебе? <span>(необязательно)</span></label>
+            <textarea class="inp" id="additional_info" rows="3"
+                placeholder="Особые обстоятельства, достижения, планы, вопросы — любая информация которая поможет составить точный план"></textarea>
+        </div>
+    </div>
+
+    <button type="submit" class="submit-btn">Далее — Выбор университета →</button>
+
+</form>
+</div>
+
+<footer>Next Step · CED28 Hackathon · 2026</footer>
+
+<script>
+// ── SUBJECTS ──────────────────────────────────────────────────────────────────
+const SUBJECTS = [
+    { id: 'math',    label: 'Математика' },
+    { id: 'physics', label: 'Физика / Химия' },
+    { id: 'bio',     label: 'Биология' },
+    { id: 'english', label: 'Английский' },
+    { id: 'uzbek',   label: 'Узбекский яз.' },
+    { id: 'history', label: 'История / Геог.' },
+];
+
+const subjectGrid = document.getElementById('subject-gpa-grid');
+SUBJECTS.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'subj-item';
+    div.innerHTML = `
+        <div class="subj-name">
+            <span>${s.label}</span>
+            <span class="gpa-val" id="val-${s.id}">4.5</span>
+        </div>
+        <input type="range" id="gpa-${s.id}" min="2" max="5" step="0.1" value="4.5"
+            oninput="document.getElementById('val-${s.id}').textContent=parseFloat(this.value).toFixed(1)">`;
+    subjectGrid.appendChild(div);
+});
+
+// ── GPA MODE ──────────────────────────────────────────────────────────────────
+function setGpaMode(mode) {
+    document.getElementById('gpa-overall-block').style.display  = mode==='overall'  ? '' : 'none';
+    document.getElementById('gpa-subjects-block').style.display = mode==='subjects' ? '' : 'none';
+    document.getElementById('gpa-overall-btn').classList.toggle('active', mode==='overall');
+    document.getElementById('gpa-subjects-btn').classList.toggle('active', mode==='subjects');
+    document.getElementById('_gpa_mode').value = mode;
+}
+window.setGpaMode = setGpaMode;
+
+// ── GPA SLIDER ────────────────────────────────────────────────────────────────
+document.getElementById('gpa_uzbek').addEventListener('input', function() {
+    document.getElementById('gpaVal').textContent = parseFloat(this.value).toFixed(1);
+});
+
+// ── BUDGET ────────────────────────────────────────────────────────────────────
+window.selectBudget = function(btn) {
+    document.querySelectorAll('.budget-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    document.getElementById('budget_raw').value = btn.dataset.val;
+};
+
+// Hidden field for GPA mode
+const hiddenMode = document.createElement('input');
+hiddenMode.type = 'hidden'; hiddenMode.id = '_gpa_mode'; hiddenMode.value = 'overall';
+document.getElementById('profileForm').appendChild(hiddenMode);
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const mode = document.getElementById('_gpa_mode').value;
+
+    let gpaData = {};
+    if (mode === 'overall') {
+        gpaData = { mode: 'overall', value: document.getElementById('gpa_uzbek').value };
+    } else {
+        const subjects = {};
+        SUBJECTS.forEach(s => {
+            subjects[s.label] = parseFloat(document.getElementById('gpa-'+s.id).value).toFixed(1);
+        });
+        gpaData = { mode: 'subjects', subjects };
+    }
+
+    const profile = {
+        name:             document.getElementById('name').value.trim(),
+        city:             document.getElementById('city').value,
+        grade:            document.getElementById('grade').value,
+        school_type:      document.getElementById('school_type').value,
+        curriculum:       document.getElementById('curriculum').value,
+        target_major:     document.getElementById('target_major').value,
+        gpa:              gpaData,
+        class_rank:       document.getElementById('class_rank').value,
+        study_hours:      document.getElementById('study_hours').value,
+        ielts_score:      document.getElementById('ielts_score').value,
+        sat_score:        document.getElementById('sat_score').value,
+        russian_level:    document.getElementById('russian_level').value,
+        german_level:     document.getElementById('german_level').value,
+        other_lang:       document.getElementById('other_lang').value,
+        olympiads:        document.getElementById('olympiads').value.trim(),
+        extracurriculars: document.getElementById('extracurriculars').value.trim(),
+        work_experience:  document.getElementById('work_experience').value,
+        independent_project: document.getElementById('independent_project').value,
+        leadership:       document.getElementById('leadership').value,
+        international_exp:document.getElementById('international_exp').value,
+        budget_raw:       document.getElementById('budget_raw').value,
+        first_gen:        document.getElementById('first_gen').value,
+        application_year: document.getElementById('application_year').value,
+        additional_info:  document.getElementById('additional_info').value.trim(),
+        // Legacy fields for server compatibility
+        gpa_uzbek:        mode === 'overall' ? document.getElementById('gpa_uzbek').value : null,
+    };
+
+    sessionStorage.setItem('profile', JSON.stringify(profile));
+    window.location.href = '/map.html';
+});
+</script>
+</body>
+</html>

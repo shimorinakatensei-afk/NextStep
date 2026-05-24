@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Step — Выбор университета</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #f7f5f0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ── HEADER ─────────────────────────────────────────────────── */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 32px;
+            position: relative;
+            z-index: 10;
+        }
+        .logo { font-size: 14px; font-weight: 900; letter-spacing: .12em; color: #1a1a1a; }
+        .back-btn {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 12px; color: #888; cursor: pointer;
+            background: none; border: none;
+            transition: color .15s;
+        }
+        .back-btn:hover { color: #1a1a1a; }
+        .step-dots { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; }
+        .dot.done { background: #1a1a1a; }
+        .dot.active { background: #1a1a1a; }
+        .dot.idle { background: #d0ccc4; }
+        .dash { width: 20px; height: 1.5px; border-radius: 1px; }
+        .dash.done { background: #1a1a1a; }
+        .dash.idle { background: #d0ccc4; }
+
+        /* ── MAIN STAGE ─────────────────────────────────────────────── */
+        .stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 24px 24px;
+            position: relative;
+        }
+
+        .stage-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stage-title h1 {
+            font-size: 22px; font-weight: 900;
+            color: #1a1a1a; letter-spacing: -.02em;
+        }
+        .stage-title p {
+            font-size: 12px; color: #888; margin-top: 4px;
+        }
+
+        /* ── COUNTRY SEARCH ─────────────────────────────────────────── */
+        .country-search-wrap {
+            position: relative;
+            margin-top: 14px;
+            width: 320px;
+            max-width: 90vw;
+        }
+        .country-search-input {
+            width: 100%; height: 40px;
+            padding: 0 14px 0 38px;
+            background: #fff;
+            border: 1.5px solid #e0dbd2;
+            border-radius: 12px;
+            font-size: 13px; color: #1a1a1a;
+            font-family: inherit;
+            outline: none;
+            transition: border-color .15s, box-shadow .15s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='none' viewBox='0 0 24 24' stroke='%23aaa' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath stroke-linecap='round' d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+        .country-search-input:focus {
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26,26,26,.07);
+        }
+        .country-search-input::placeholder { color: #b0aa9e; }
+
+        .country-dropdown {
+            position: absolute;
+            top: calc(100% + 6px); left: 0; right: 0;
+            background: #fff;
+            border: 1.5px solid #e0dbd2;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.1);
+            overflow: hidden;
+            z-index: 50;
+            display: none;
+        }
+        .country-dropdown.show { display: block; }
+
+        .country-option {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px; cursor: pointer;
+            font-size: 13px; color: #1a1a1a; font-weight: 500;
+            transition: background .1s;
+            border-bottom: 1px solid #f4f1ec;
+        }
+        .country-option:last-child { border-bottom: none; }
+        .country-option:hover { background: #f7f5f0; }
+        .country-option-count {
+            font-size: 10px; color: #aaa; font-weight: 600;
+            font-family: monospace;
+        }
+
+        /* ── GLOBE WRAPPER ──────────────────────────────────────────── */
+        .globe-wrapper {
+            position: relative;
+            width: 560px; height: 560px;
+            max-width: 92vw; max-height: 92vw;
+            display: flex; align-items: center; justify-content: center;
+            cursor: grab;
+        }
+        .globe-wrapper:active { cursor: grabbing; }
+
+        .globe-rings {
+            position: absolute; inset: 0;
+            pointer-events: none;
+        }
+
+        @keyframes cw  { to { transform: rotate(360deg);  } }
+        @keyframes ccw { to { transform: rotate(-360deg); } }
+        .r-cw  { animation: cw  30s linear infinite; transform-origin: center; }
+        .r-ccw { animation: ccw 20s linear infinite; transform-origin: center; }
+
+        #globe-svg {
+            position: relative; z-index: 2;
+            filter: drop-shadow(0 8px 32px rgba(0,0,0,.10));
+        }
+
+        /* ── COUNTRY TOOLTIP ────────────────────────────────────────── */
+        #tooltip {
+            position: fixed;
+            background: #1a1a1a; color: #fff;
+            font-size: 11px; font-weight: 600;
+            padding: 5px 10px; border-radius: 8px;
+            pointer-events: none; opacity: 0;
+            transition: opacity .15s;
+            z-index: 100;
+            letter-spacing: .02em;
+        }
+
+        /* ── SELECTED BADGE ─────────────────────────────────────────── */
+        #selected-badge {
+            margin-top: 16px;
+            display: flex; align-items: center; gap: 8px;
+            opacity: 0; transition: opacity .3s;
+        }
+        #selected-badge.visible { opacity: 1; }
+        .badge-label {
+            font-size: 10px; font-weight: 700; letter-spacing: .08em;
+            text-transform: uppercase; color: #888;
+        }
+        .badge-value {
+            font-size: 14px; font-weight: 800; color: #1a1a1a;
+        }
+        .badge-change {
+            font-size: 11px; color: #888; cursor: pointer;
+            text-decoration: underline; text-underline-offset: 2px;
+        }
+        .badge-change:hover { color: #1a1a1a; }
+
+        /* ── DRAWER (right panel) ───────────────────────────────────── */
+        #drawer {
+            position: fixed;
+            top: 0; right: 0;
+            width: 380px; max-width: 100vw;
+            height: 100vh;
+            background: #fff;
+            border-left: 1px solid #e8e4dc;
+            box-shadow: -8px 0 40px rgba(0,0,0,.08);
+            display: flex; flex-direction: column;
+            transform: translateX(100%);
+            transition: transform .4s cubic-bezier(.4,0,.2,1);
+            z-index: 200;
+        }
+        #drawer.open { transform: translateX(0); }
+
+        .drawer-header {
+            padding: 20px 20px 14px;
+            border-bottom: 1px solid #f0ede6;
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 12px;
+        }
+        .drawer-close {
+            width: 28px; height: 28px; border-radius: 8px;
+            background: #f0ede6; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: background .15s;
+        }
+        .drawer-close:hover { background: #e8e4dc; }
+        .drawer-title { font-size: 16px; font-weight: 900; color: #1a1a1a; }
+        .drawer-sub   { font-size: 11px; color: #888; margin-top: 2px; }
+        .qs-badge {
+            font-size: 10px; font-mono: true; font-family: monospace;
+            background: #f7f5f0; border: 1px solid #e8e4dc;
+            padding: 3px 8px; border-radius: 6px; color: #888;
+            white-space: nowrap; align-self: flex-start; flex-shrink: 0;
+        }
+
+        /* Search */
+        .drawer-search {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0ede6;
+        }
+        .search-input {
+            width: 100%;
+            height: 36px; padding: 0 12px 0 34px;
+            background: #f7f5f0; border: 1px solid #e8e4dc;
+            border-radius: 8px; font-size: 12px; color: #1a1a1a;
+            outline: none; transition: border-color .15s;
+            font-family: inherit;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' viewBox='0 0 24 24' stroke='%23aaa' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath stroke-linecap='round' d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 10px center;
+        }
+        .search-input:focus { border-color: #1a1a1a; background-color: #fff; }
+
+        /* List */
+        .uni-list {
+            flex: 1; overflow-y: auto; padding: 10px 12px;
+        }
+        .uni-list::-webkit-scrollbar { width: 3px; }
+        .uni-list::-webkit-scrollbar-track { background: transparent; }
+        .uni-list::-webkit-scrollbar-thumb { background: #d0ccc4; border-radius: 2px; }
+
+        .uni-btn {
+            width: 100%; text-align: left;
+            padding: 9px 12px; border-radius: 9px;
+            background: transparent; border: 1px solid transparent;
+            cursor: pointer; transition: all .12s;
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 8px;
+            margin-bottom: 3px;
+        }
+        .uni-btn:hover { background: #f7f5f0; border-color: #e8e4dc; }
+        .uni-btn.sel  { background: #1a1a1a; border-color: #1a1a1a; }
+        .uni-btn.sel .uni-name { color: #fff; }
+        .uni-btn.sel .uni-rank { background: rgba(255,255,255,.12); color: rgba(255,255,255,.65); }
+
+        .uni-name {
+            font-size: 12.5px; font-weight: 500; color: #1a1a1a;
+            flex: 1; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+        .uni-rank {
+            font-size: 10px; font-weight: 700;
+            padding: 2px 7px; border-radius: 20px;
+            background: #f0ede6; color: #888;
+            white-space: nowrap; flex-shrink: 0;
+        }
+
+        /* Footer */
+        .drawer-footer {
+            padding: 14px 16px;
+            border-top: 1px solid #f0ede6;
+        }
+        .submit-btn {
+            width: 100%; height: 46px;
+            background: #1a1a1a; color: #fff;
+            font-weight: 700; font-size: 13px;
+            border: none; border-radius: 11px;
+            cursor: pointer; letter-spacing: .02em;
+            transition: background .15s, transform .1s;
+        }
+        .submit-btn:hover:not(:disabled) { background: #333; }
+        .submit-btn:active:not(:disabled) { transform: scale(.98); }
+        .submit-btn:disabled {
+            background: #e8e4dc; color: #a8a49e; cursor: not-allowed;
+        }
+
+        /* ── BACKDROP ───────────────────────────────────────────────── */
+        #backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.18);
+            z-index: 190; opacity: 0;
+            transition: opacity .35s;
+            pointer-events: none;
+        }
+        #backdrop.visible { opacity: 1; pointer-events: all; }
+
+        /* ── LOADING OVERLAY ────────────────────────────────────────── */
+        #loading {
+            position: fixed; inset: 0;
+            background: #f7f5f0;
+            display: none; z-index: 300;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 16px;
+        }
+        #loading.show { display: flex; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 3px solid #e0dbd2;
+            border-top-color: #1a1a1a;
+            animation: spin 1s linear infinite;
+        }
+        #loading p { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        #loading small { font-size: 11px; color: #aaa; }
+        #load-status { font-size: 11px; color: #888; min-height: 16px; }
+
+        footer {
+            text-align: center;
+            font-size: 10px; font-family: monospace;
+            color: #bbb; padding: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+    <div class="spinner"></div>
+    <p>Next Step AI анализирует</p>
+    <span id="load-status">Инициализация...</span>
+    <small>Сравниваем с реальными случаями из Узбекистана</small>
+</div>
+
+<!-- TOOLTIP -->
+<div id="tooltip"></div>
+
+<!-- BACKDROP -->
+<div id="backdrop"></div>
+
+<!-- DRAWER -->
+<div id="drawer">
+    <div class="drawer-header">
+        <div style="flex:1;min-width:0">
+            <div class="drawer-title" id="drawer-country">—</div>
+            <div class="drawer-sub" id="drawer-sub">Выбери университет</div>
+        </div>
+        <span class="qs-badge">QS 2025</span>
+        <button class="drawer-close" id="drawer-close" aria-label="Закрыть">
+            <svg width="12" height="12" fill="none" stroke="#666" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <div class="drawer-search">
+        <input id="search-input" class="search-input" placeholder="Поиск университета..." autocomplete="off">
+    </div>
+    <div class="uni-list" id="uni-list"></div>
+    <div class="drawer-footer">
+        <button id="submit-btn" class="submit-btn" disabled>Выбери университет</button>
+    </div>
+</div>
+
+<!-- MAIN -->
+<header>
+    <button class="back-btn" id="back-btn">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Назад
+    </button>
+    <span class="logo">NEXT STEP</span>
+    <div class="step-dots">
+        <div class="dot done"></div>
+        <div class="dash done"></div>
+        <div class="dot active"></div>
+        <div class="dash idle"></div>
+        <div class="dot idle"></div>
+    </div>
+</header>
+
+<div class="stage">
+    <div class="stage-title">
+        <h1>Выбери страну</h1>
+        <p>Крути глобус · кликни · или найди через поиск</p>
+        <div class="country-search-wrap">
+            <input id="country-search" class="country-search-input"
+                placeholder="Поиск страны... (США, Германия, UK...)"
+                autocomplete="off" spellcheck="false">
+            <div id="country-dropdown" class="country-dropdown"></div>
+        </div>
+    </div>
+
+    <div class="globe-wrapper" id="globe-wrapper">
+        <!-- Whirl rings -->
+        <svg class="globe-rings" viewBox="0 0 560 560">
+            <!-- CW: long arc + ticks -->
+            <g transform="translate(280,280)" class="r-cw">
+                <circle r="272" fill="none" stroke="#1a1a1a" stroke-width="1"
+                    stroke-dasharray="64 6 3 6" opacity=".14"/>
+                <g opacity=".22" stroke="#1a1a1a">
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(0)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(10)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(20)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(30)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(40)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(50)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(60)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(70)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(80)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(90)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(100)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(110)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(120)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(130)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(140)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(150)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(160)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(170)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(180)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(190)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(200)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(210)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(220)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(230)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(240)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(250)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(260)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(270)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(280)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(290)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(300)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(310)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(320)"/>
+                    <line x1="272" y1="0" x2="284" y2="0" stroke-width="1.8" transform="rotate(330)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(340)"/>
+                    <line x1="272" y1="0" x2="278" y2="0" stroke-width="1"   transform="rotate(350)"/>
+                </g>
+            </g>
+            <!-- CCW: fine dots -->
+            <g transform="translate(280,280)" class="r-ccw">
+                <circle r="260" fill="none" stroke="#1a1a1a" stroke-width=".8"
+                    stroke-dasharray="2 10" opacity=".12"/>
+            </g>
+        </svg>
+
+        <!-- D3 Globe SVG -->
+        <svg id="globe-svg" width="520" height="520"></svg>
+    </div>
+
+    <div id="selected-badge">
+        <span class="badge-label">Выбрана:</span>
+        <span class="badge-value" id="badge-country">—</span>
+        <span class="badge-change" id="badge-open">Посмотреть вузы →</span>
+    </div>
+</div>
+
+<footer>Next Step · CED28 Hackathon · 2026</footer>
+
+<!-- D3 + TopoJSON -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+// ── GUARD ────────────────────────────────────────────────────────────────────
+const profile = JSON.parse(sessionStorage.getItem('profile'));
+if (!profile) { window.location.href = '/'; }
+document.getElementById('back-btn').onclick = () => window.location.href = '/';
+
+// ── QS DATA ──────────────────────────────────────────────────────────────────
+const COUNTRY_NAMES = {
+    840:'США', 826:'Великобритания', 276:'Германия', 756:'Швейцария',
+    702:'Сингапур', 410:'Южная Корея', 250:'Франция', 528:'Нидерланды',
+    124:'Канада', 36:'Австралия', 156:'Китай', 392:'Япония',
+    356:'Индия', 752:'Швеция', 208:'Дания', 246:'Финляндия',
+    578:'Норвегия', 56:'Бельгия', 40:'Австрия', 203:'Чехия',
+    554:'Новая Зеландия', 380:'Италия', 724:'Испания'
+};
+
+const QS = {
+    840:[
+        {r:1,n:"Massachusetts Institute of Technology (MIT)"},
+        {r:3,n:"Stanford University"},
+        {r:5,n:"Harvard University"},
+        {r:10,n:"California Institute of Technology (Caltech)"},
+        {r:15,n:"University of Pennsylvania"},
+        {r:16,n:"Cornell University"},
+        {r:21,n:"Yale University"},
+        {r:22,n:"Johns Hopkins University"},
+        {r:23,n:"University of Michigan-Ann Arbor"},
+        {r:24,n:"University of Chicago"},
+        {r:25,n:"Princeton University"},
+        {r:33,n:"UCLA"},
+        {r:34,n:"UC Berkeley"},
+        {r:38,n:"Columbia University"},
+        {r:44,n:"Northwestern University"},
+        {r:56,n:"Duke University"},
+        {r:60,n:"Carnegie Mellon University"},
+        {r:69,n:"Brown University"},
+        {r:72,n:"University of Washington"},
+        {r:82,n:"New York University (NYU)"},
+        {r:88,n:"Purdue University"},
+        {r:88,n:"Boston University"},
+        {r:92,n:"Rice University"},
+        {r:97,n:"University of Notre Dame"},
+        {r:105,n:"University of Texas at Austin"},
+        {r:107,n:"University of Wisconsin-Madison"},
+        {r:120,n:"University of Florida"},
+        {r:125,n:"Georgetown University"},
+        {r:130,n:"Emory University"},
+        {r:133,n:"University of Southern California (USC)"},
+        {r:135,n:"Vanderbilt University"},
+        {r:142,n:"University of Illinois Urbana-Champaign"},
+        {r:147,n:"Dartmouth College"},
+        {r:149,n:"UC San Diego"},
+        {r:155,n:"Ohio State University"},
+        {r:162,n:"University of Minnesota"},
+        {r:175,n:"Penn State University"},
+        {r:185,n:"University of North Carolina Chapel Hill"},
+        {r:195,n:"Washington University in St. Louis"},
+        {r:201,n:"University of Pittsburgh"},
+        {r:210,n:"University of Rochester"},
+        {r:215,n:"Case Western Reserve University"},
+        {r:225,n:"Tufts University"},
+        {r:231,n:"Michigan State University"},
+        {r:240,n:"University of Virginia"},
+        {r:255,n:"UC Davis"},
+        {r:261,n:"University of Maryland"},
+        {r:271,n:"UC Santa Barbara"},
+        {r:285,n:"University of Colorado Boulder"},
+        {r:295,n:"Georgia Institute of Technology"},
+        {r:301,n:"University of Arizona"},
+        {r:315,n:"Northeastern University"},
+        {r:325,n:"University of Illinois Chicago"},
+        {r:335,n:"University of Utah"},
+        {r:345,n:"Indiana University Bloomington"},
+        {r:355,n:"UC Irvine"},
+        {r:365,n:"University of Texas Dallas"},
+        {r:378,n:"Rutgers University"},
+        {r:388,n:"University of Connecticut"},
+        {r:395,n:"Texas A&M University"},
+        {r:405,n:"University of Iowa"},
+        {r:415,n:"University of Kansas"},
+        {r:425,n:"University of Nebraska-Lincoln"},
+        {r:435,n:"Oklahoma State University"},
+        {r:445,n:"University of Delaware"},
+        {r:455,n:"Syracuse University"},
+        {r:465,n:"Tulane University"},
+        {r:475,n:"American University"},
+        {r:485,n:"University of Vermont"},
+        {r:495,n:"Worcester Polytechnic Institute (WPI)"}
+    ],
+    826:[
+        {r:2,n:"Imperial College London"},
+        {r:4,n:"University of Oxford"},
+        {r:6,n:"University of Cambridge"},
+        {r:9,n:"University College London (UCL)"},
+        {r:27,n:"University of Edinburgh"},
+        {r:34,n:"King's College London"},
+        {r:40,n:"London School of Economics (LSE)"},
+        {r:48,n:"University of Manchester"},
+        {r:54,n:"University of Bristol"},
+        {r:67,n:"University of Warwick"},
+        {r:73,n:"University of Glasgow"},
+        {r:81,n:"University of Birmingham"},
+        {r:90,n:"University of Leeds"},
+        {r:92,n:"University of Sheffield"},
+        {r:94,n:"Durham University"},
+        {r:97,n:"University of Nottingham"},
+        {r:101,n:"University of Southampton"},
+        {r:104,n:"University of St Andrews"},
+        {r:109,n:"Queen Mary University of London"},
+        {r:118,n:"University of Exeter"},
+        {r:132,n:"University of Bath"},
+        {r:136,n:"Newcastle University"},
+        {r:152,n:"Lancaster University"},
+        {r:162,n:"Cardiff University"},
+        {r:172,n:"University of York"},
+        {r:181,n:"Loughborough University"},
+        {r:191,n:"University of Surrey"},
+        {r:198,n:"University of Reading"},
+        {r:207,n:"University of Aberdeen"},
+        {r:218,n:"University of Dundee"},
+        {r:228,n:"Heriot-Watt University"},
+        {r:238,n:"University of Strathclyde"},
+        {r:247,n:"Brunel University London"},
+        {r:258,n:"University of Leicester"},
+        {r:267,n:"University of Sussex"},
+        {r:278,n:"City, University of London"},
+        {r:285,n:"Royal Holloway University of London"},
+        {r:295,n:"University of Liverpool"},
+        {r:305,n:"University of East Anglia (UEA)"},
+        {r:315,n:"University of Kent"},
+        {r:325,n:"University of Hull"},
+        {r:335,n:"Aston University"},
+        {r:345,n:"Swansea University"},
+        {r:355,n:"University of Portsmouth"},
+        {r:365,n:"Northumbria University"},
+        {r:375,n:"Keele University"},
+        {r:385,n:"University of Stirling"},
+        {r:395,n:"University of Lincoln"},
+        {r:405,n:"Coventry University"},
+        {r:415,n:"University of Brighton"},
+        {r:425,n:"Queen's University Belfast"},
+        {r:435,n:"University of Huddersfield"},
+        {r:445,n:"University of the Arts London (UAL)"},
+        {r:455,n:"Oxford Brookes University"},
+        {r:465,n:"Manchester Metropolitan University"},
+        {r:475,n:"Edinburgh Napier University"},
+        {r:485,n:"Glasgow Caledonian University"},
+        {r:491,n:"University of Salford"},
+        {r:495,n:"University of Ulster"}
+    ],
+    276:[
+        {r:54,n:"Technical University of Munich (TUM)"},
+        {r:59,n:"Ludwig-Maximilians-Universitaet Muenchen (LMU)"},
+        {r:87,n:"Heidelberg University"},
+        {r:98,n:"Karlsruhe Institute of Technology (KIT)"},
+        {r:104,n:"Freie Universitaet Berlin"},
+        {r:119,n:"Humboldt-Universitaet zu Berlin"},
+        {r:125,n:"RWTH Aachen University"},
+        {r:143,n:"University of Hamburg"},
+        {r:155,n:"Technische Universitaet Berlin"},
+        {r:162,n:"University of Bonn"},
+        {r:175,n:"University of Cologne"},
+        {r:182,n:"University of Stuttgart"},
+        {r:191,n:"Eberhard Karls Universitaet Tuebingen"},
+        {r:201,n:"Goethe University Frankfurt"},
+        {r:211,n:"University of Freiburg"},
+        {r:221,n:"University of Goettingen"},
+        {r:231,n:"TU Dresden"},
+        {r:241,n:"University of Muenster"},
+        {r:251,n:"Ruhr University Bochum"},
+        {r:261,n:"University of Erlangen-Nuremberg (FAU)"},
+        {r:271,n:"University of Mannheim"},
+        {r:281,n:"University of Leipzig"},
+        {r:291,n:"Ulm University"},
+        {r:301,n:"University of Duisburg-Essen"},
+        {r:311,n:"University of Kiel"},
+        {r:321,n:"Universitaet Bremen"},
+        {r:331,n:"University of Mainz (JGU)"},
+        {r:341,n:"Bielefeld University"},
+        {r:351,n:"TU Darmstadt"},
+        {r:361,n:"University of Wuerzburg"},
+        {r:371,n:"University of Regensburg"},
+        {r:381,n:"Universitaet Marburg"},
+        {r:391,n:"University of Saarland"},
+        {r:401,n:"Friedrich Schiller University Jena"},
+        {r:411,n:"University of Bayreuth"},
+        {r:421,n:"University of Augsburg"},
+        {r:431,n:"TU Braunschweig"},
+        {r:441,n:"University of Konstanz"},
+        {r:451,n:"Paderborn University"},
+        {r:461,n:"University of Kassel"},
+        {r:471,n:"University of Osnabrueck"},
+        {r:481,n:"University of Rostock"},
+        {r:491,n:"Jacobs University Bremen"}
+    ],
+    756:[
+        {r:7,n:"ETH Zurich"},
+        {r:36,n:"EPFL – Ecole Polytechnique Federale de Lausanne"},
+        {r:100,n:"University of Zurich"},
+        {r:148,n:"University of Geneva"},
+        {r:155,n:"University of Bern"},
+        {r:168,n:"University of Basel"},
+        {r:228,n:"University of Lausanne"},
+        {r:285,n:"University of St. Gallen (HSG)"},
+        {r:355,n:"University of Lucerne"},
+        {r:415,n:"University of Fribourg"},
+        {r:461,n:"University of Neuchatel"}
+    ],
+    702:[
+        {r:8,n:"National University of Singapore (NUS)"},
+        {r:11,n:"Nanyang Technological University (NTU)"},
+        {r:207,n:"Singapore Management University (SMU)"},
+        {r:381,n:"Singapore University of Technology and Design (SUTD)"},
+        {r:451,n:"Singapore Institute of Technology (SIT)"}
+    ],
+    410:[
+        {r:31,n:"Seoul National University (SNU)"},
+        {r:41,n:"KAIST"},
+        {r:42,n:"Yonsei University"},
+        {r:63,n:"Korea University"},
+        {r:83,n:"Sungkyunkwan University (SKKU)"},
+        {r:107,n:"Hanyang University"},
+        {r:135,n:"POSTECH"},
+        {r:147,n:"UNIST"},
+        {r:155,n:"Sogang University"},
+        {r:172,n:"Ewha Womans University"},
+        {r:181,n:"Kyung Hee University"},
+        {r:201,n:"University of Seoul"},
+        {r:215,n:"Inha University"},
+        {r:228,n:"Konkuk University"},
+        {r:241,n:"Chung-Ang University"},
+        {r:255,n:"Pusan National University"},
+        {r:271,n:"Ajou University"},
+        {r:285,n:"Sejong University"},
+        {r:301,n:"Kookmin University"},
+        {r:335,n:"Gyeongsang National University"},
+        {r:351,n:"Chonnam National University"},
+        {r:371,n:"Keimyung University"},
+        {r:388,n:"Sookmyung Women University"},
+        {r:405,n:"Hankuk University of Foreign Studies"},
+        {r:421,n:"Dankook University"},
+        {r:461,n:"Changwon National University"},
+        {r:481,n:"Kyonggi University"}
+    ],
+    250:[
+        {r:21,n:"Universite Paris-Saclay"},
+        {r:32,n:"Sorbonne University"},
+        {r:56,n:"Institut Polytechnique de Paris"},
+        {r:111,n:"Universite Paris Cite"},
+        {r:135,n:"CentraleSupelec"},
+        {r:162,n:"Sciences Po Paris"},
+        {r:181,n:"Aix-Marseille University"},
+        {r:201,n:"Universite de Lyon"},
+        {r:218,n:"University of Bordeaux"},
+        {r:228,n:"Universite de Montpellier"},
+        {r:241,n:"University of Strasbourg"},
+        {r:255,n:"Universite Paul Sabatier Toulouse III"},
+        {r:271,n:"University of Rennes 1"},
+        {r:285,n:"Universite de Nantes"},
+        {r:295,n:"Universite de Lorraine"},
+        {r:305,n:"Universite Grenoble Alpes"},
+        {r:315,n:"Universite Clermont-Auvergne"},
+        {r:325,n:"Universite de Poitiers"},
+        {r:335,n:"Universite de Bourgogne"},
+        {r:345,n:"Universite de Caen Normandie"},
+        {r:415,n:"INSEAD Business School"},
+        {r:425,n:"HEC Paris"},
+        {r:435,n:"ESSEC Business School"},
+        {r:455,n:"Ecole Normale Superieure (ENS Paris)"},
+        {r:465,n:"Universite de Versailles Saint-Quentin"},
+        {r:475,n:"Universite de Limoges"},
+        {r:485,n:"Universite de Franche-Comte"}
+    ],
+    528:[
+        {r:26,n:"Delft University of Technology"},
+        {r:53,n:"University of Amsterdam"},
+        {r:65,n:"Erasmus University Rotterdam"},
+        {r:67,n:"Leiden University"},
+        {r:75,n:"Utrecht University"},
+        {r:77,n:"Wageningen University and Research"},
+        {r:82,n:"Eindhoven University of Technology"},
+        {r:108,n:"University of Groningen"},
+        {r:138,n:"Radboud University"},
+        {r:162,n:"Maastricht University"},
+        {r:181,n:"Vrije Universiteit Amsterdam"},
+        {r:207,n:"Tilburg University"},
+        {r:228,n:"University of Twente"},
+        {r:271,n:"Rotterdam School of Management"},
+        {r:315,n:"Amsterdam University of Applied Sciences"},
+        {r:395,n:"NHL Stenden University of Applied Sciences"},
+        {r:435,n:"Hanze University of Applied Sciences"},
+        {r:475,n:"Fontys University of Applied Sciences"}
+    ],
+    124:[
+        {r:25,n:"University of Toronto"},
+        {r:30,n:"McGill University"},
+        {r:34,n:"University of British Columbia"},
+        {r:94,n:"University of Alberta"},
+        {r:98,n:"McMaster University"},
+        {r:103,n:"Universite de Montreal"},
+        {r:112,n:"University of Ottawa"},
+        {r:141,n:"University of Waterloo"},
+        {r:162,n:"Western University"},
+        {r:181,n:"Queen's University"},
+        {r:201,n:"University of Calgary"},
+        {r:218,n:"Dalhousie University"},
+        {r:235,n:"Simon Fraser University"},
+        {r:255,n:"University of Victoria"},
+        {r:271,n:"York University"},
+        {r:291,n:"University of Manitoba"},
+        {r:311,n:"Concordia University"},
+        {r:331,n:"University of Saskatchewan"},
+        {r:351,n:"Universite Laval"},
+        {r:371,n:"University of New Brunswick"},
+        {r:391,n:"University of Guelph"},
+        {r:411,n:"Carleton University"},
+        {r:431,n:"Universite du Quebec (UQAM)"},
+        {r:451,n:"University of Windsor"},
+        {r:471,n:"Toronto Metropolitan University"},
+        {r:491,n:"Brock University"}
+    ],
+    36:[
+        {r:18,n:"Australian National University (ANU)"},
+        {r:19,n:"University of Melbourne"},
+        {r:23,n:"University of Sydney"},
+        {r:29,n:"University of New South Wales (UNSW)"},
+        {r:37,n:"University of Queensland"},
+        {r:39,n:"Monash University"},
+        {r:72,n:"University of Western Australia"},
+        {r:81,n:"University of Adelaide"},
+        {r:88,n:"University of Technology Sydney (UTS)"},
+        {r:133,n:"Macquarie University"},
+        {r:158,n:"RMIT University"},
+        {r:172,n:"Deakin University"},
+        {r:191,n:"Queensland University of Technology (QUT)"},
+        {r:211,n:"University of Newcastle"},
+        {r:228,n:"University of Wollongong"},
+        {r:245,n:"Griffith University"},
+        {r:261,n:"Curtin University"},
+        {r:278,n:"La Trobe University"},
+        {r:295,n:"University of South Australia (UniSA)"},
+        {r:315,n:"James Cook University"},
+        {r:335,n:"Western Sydney University"},
+        {r:355,n:"University of Tasmania"},
+        {r:375,n:"Flinders University"},
+        {r:395,n:"Australian Catholic University (ACU)"},
+        {r:415,n:"Bond University"},
+        {r:435,n:"Charles Darwin University"},
+        {r:455,n:"University of Canberra"},
+        {r:475,n:"Murdoch University"},
+        {r:491,n:"Federation University Australia"}
+    ],
+    156:[
+        {r:14,n:"Peking University"},
+        {r:20,n:"Tsinghua University"},
+        {r:45,n:"Fudan University"},
+        {r:51,n:"Shanghai Jiao Tong University"},
+        {r:57,n:"Zhejiang University"},
+        {r:71,n:"University of Science and Technology of China (USTC)"},
+        {r:85,n:"Wuhan University"},
+        {r:94,n:"Tongji University"},
+        {r:99,n:"Harbin Institute of Technology"},
+        {r:108,n:"Sun Yat-sen University"},
+        {r:115,n:"Nankai University"},
+        {r:128,n:"Beijing Institute of Technology"},
+        {r:141,n:"Huazhong University of Science and Technology"},
+        {r:155,n:"Southeast University"},
+        {r:162,n:"Xi'an Jiaotong University"},
+        {r:175,n:"Shandong University"},
+        {r:185,n:"Tianjin University"},
+        {r:201,n:"Renmin University of China"},
+        {r:215,n:"Beijing Normal University"},
+        {r:228,n:"East China Normal University"},
+        {r:241,n:"University of Electronic Science and Technology of China"},
+        {r:255,n:"South China University of Technology"},
+        {r:271,n:"Beihang University (BUAA)"},
+        {r:285,n:"Xiamen University"},
+        {r:301,n:"Central South University"},
+        {r:315,n:"Jilin University"},
+        {r:331,n:"Northeastern University China"},
+        {r:351,n:"Northwestern Polytechnical University"},
+        {r:371,n:"Nanjing University"},
+        {r:391,n:"China Agricultural University"},
+        {r:411,n:"Lanzhou University"},
+        {r:431,n:"Ocean University of China"},
+        {r:451,n:"Southwest Jiaotong University"},
+        {r:471,n:"Beijing Jiaotong University"},
+        {r:491,n:"Dalian University of Technology"}
+    ],
+    392:[
+        {r:28,n:"University of Tokyo"},
+        {r:51,n:"Kyoto University"},
+        {r:53,n:"Osaka University"},
+        {r:68,n:"Tohoku University"},
+        {r:78,n:"Tokyo Institute of Technology (Tokyo Tech)"},
+        {r:98,n:"Nagoya University"},
+        {r:108,n:"Hokkaido University"},
+        {r:121,n:"Kyushu University"},
+        {r:141,n:"Keio University"},
+        {r:155,n:"Waseda University"},
+        {r:201,n:"University of Tsukuba"},
+        {r:228,n:"Hiroshima University"},
+        {r:255,n:"Kobe University"},
+        {r:271,n:"Okayama University"},
+        {r:291,n:"Tokyo Medical and Dental University (TMDU)"},
+        {r:315,n:"Chiba University"},
+        {r:335,n:"Kumamoto University"},
+        {r:355,n:"Kanazawa University"},
+        {r:375,n:"Osaka Metropolitan University"},
+        {r:395,n:"Nagoya Institute of Technology"},
+        {r:415,n:"Ritsumeikan University"},
+        {r:435,n:"Doshisha University"},
+        {r:455,n:"Tokyo University of Science"},
+        {r:475,n:"Meiji University"},
+        {r:491,n:"Sophia University"}
+    ],
+    356:[
+        {r:118,n:"IIT Bombay"},
+        {r:150,n:"IIT Delhi"},
+        {r:171,n:"IIT Madras"},
+        {r:185,n:"IIT Kharagpur"},
+        {r:201,n:"University of Delhi"},
+        {r:228,n:"IIT Roorkee"},
+        {r:235,n:"IISc Bangalore"},
+        {r:271,n:"IIT Kanpur"},
+        {r:295,n:"IIT Guwahati"},
+        {r:315,n:"IIT Hyderabad"},
+        {r:335,n:"University of Hyderabad"},
+        {r:355,n:"Jadavpur University"},
+        {r:375,n:"Manipal Academy of Higher Education"},
+        {r:395,n:"Anna University"},
+        {r:415,n:"Amrita Vishwa Vidyapeetham"},
+        {r:435,n:"Vellore Institute of Technology (VIT)"},
+        {r:455,n:"BITS Pilani"},
+        {r:471,n:"Aligarh Muslim University"},
+        {r:481,n:"Banaras Hindu University"},
+        {r:491,n:"SRM Institute of Science and Technology"}
+    ],
+    752:[
+        {r:65,n:"Lund University"},
+        {r:86,n:"Uppsala University"},
+        {r:102,n:"Stockholm University"},
+        {r:115,n:"KTH Royal Institute of Technology"},
+        {r:138,n:"Chalmers University of Technology"},
+        {r:162,n:"University of Gothenburg"},
+        {r:201,n:"Umea University"},
+        {r:228,n:"Linkoping University"},
+        {r:271,n:"Karolinska Institute"},
+        {r:315,n:"Orebro University"},
+        {r:355,n:"Lulea University of Technology"},
+        {r:435,n:"Malmo University"},
+        {r:475,n:"Mid Sweden University"}
+    ],
+    208:[
+        {r:100,n:"University of Copenhagen"},
+        {r:147,n:"Aarhus University"},
+        {r:261,n:"Technical University of Denmark (DTU)"},
+        {r:315,n:"University of Southern Denmark"},
+        {r:371,n:"Aalborg University"},
+        {r:421,n:"Roskilde University"},
+        {r:461,n:"Copenhagen Business School"},
+        {r:481,n:"IT University of Copenhagen"}
+    ],
+    246:[
+        {r:107,n:"University of Helsinki"},
+        {r:138,n:"Aalto University"},
+        {r:251,n:"University of Oulu"},
+        {r:315,n:"University of Tampere"},
+        {r:371,n:"University of Eastern Finland"},
+        {r:421,n:"University of Jyvaskyla"},
+        {r:461,n:"University of Turku"},
+        {r:491,n:"Lappeenranta-Lahti University of Technology (LUT)"}
+    ],
+    578:[
+        {r:162,n:"University of Oslo"},
+        {r:191,n:"University of Bergen"},
+        {r:228,n:"NTNU – Norwegian University of Science and Technology"},
+        {r:295,n:"UiT The Arctic University of Norway"},
+        {r:371,n:"University of Stavanger"},
+        {r:421,n:"Norwegian Business School (BI)"},
+        {r:461,n:"University of Agder"}
+    ],
+    56:[
+        {r:74,n:"KU Leuven"},
+        {r:162,n:"Ghent University"},
+        {r:195,n:"Universite libre de Bruxelles (ULB)"},
+        {r:228,n:"Vrije Universiteit Brussel (VUB)"},
+        {r:271,n:"University of Antwerp"},
+        {r:315,n:"University of Liege"},
+        {r:355,n:"University of Namur"},
+        {r:395,n:"Hasselt University"},
+        {r:435,n:"Universite catholique de Louvain"},
+        {r:475,n:"University of Mons"}
+    ],
+    40:[
+        {r:138,n:"University of Vienna"},
+        {r:201,n:"Vienna University of Technology (TU Wien)"},
+        {r:255,n:"University of Innsbruck"},
+        {r:315,n:"Graz University of Technology"},
+        {r:371,n:"University of Graz"},
+        {r:421,n:"Johannes Kepler University Linz"},
+        {r:461,n:"University of Natural Resources and Life Sciences (BOKU)"},
+        {r:491,n:"Vienna University of Economics and Business (WU)"}
+    ],
+    203:[
+        {r:261,n:"Charles University"},
+        {r:315,n:"Czech Technical University in Prague"},
+        {r:371,n:"Brno University of Technology"},
+        {r:415,n:"Masaryk University"},
+        {r:451,n:"Palacky University Olomouc"},
+        {r:481,n:"University of Chemistry and Technology Prague"}
+    ],
+    554:[
+        {r:65,n:"University of Auckland"},
+        {r:132,n:"University of Otago"},
+        {r:215,n:"Victoria University of Wellington"},
+        {r:271,n:"University of Canterbury"},
+        {r:325,n:"Lincoln University New Zealand"},
+        {r:371,n:"Auckland University of Technology (AUT)"},
+        {r:421,n:"Massey University"},
+        {r:461,n:"University of Waikato"}
+    ],
+    380:[
+        {r:98,n:"Politecnico di Milano"},
+        {r:138,n:"University of Bologna"},
+        {r:172,n:"Sapienza University of Rome"},
+        {r:195,n:"University of Padua"},
+        {r:228,n:"Politecnico di Torino"},
+        {r:255,n:"University of Milan"},
+        {r:281,n:"University of Florence"},
+        {r:315,n:"University of Turin"},
+        {r:345,n:"University of Naples Federico II"},
+        {r:375,n:"University of Pisa"},
+        {r:405,n:"University of Genoa"},
+        {r:435,n:"University of Trento"},
+        {r:461,n:"University of Bari"},
+        {r:481,n:"University of Catania"}
+    ],
+    724:[
+        {r:155,n:"Universidad Autonoma de Madrid"},
+        {r:162,n:"University of Barcelona"},
+        {r:181,n:"Autonomous University of Barcelona"},
+        {r:215,n:"Complutense University of Madrid"},
+        {r:241,n:"University of Granada"},
+        {r:271,n:"University of Valencia"},
+        {r:301,n:"University of Seville"},
+        {r:331,n:"University of the Basque Country"},
+        {r:361,n:"University of Zaragoza"},
+        {r:391,n:"University of Salamanca"},
+        {r:421,n:"University of Malaga"},
+        {r:451,n:"University of Valladolid"},
+        {r:481,n:"University of Murcia"}
+    ]
+};
+
+// ── GLOBE SETUP ──────────────────────────────────────────────────────────────
+const W = 520, H = 520, R = 230;
+
+const projection = d3.geoOrthographic()
+    .scale(R)
+    .translate([W/2, H/2])
+    .rotate([20, -25, 12])
+    .clipAngle(90);
+
+const geoPath = d3.geoPath().projection(projection);
+const graticule = d3.geoGraticule()();
+
+const svg = d3.select('#globe-svg')
+    .attr('width', W).attr('height', H)
+    .attr('viewBox', `0 0 ${W} ${H}`);
+
+// Ocean
+svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',R)
+    .attr('fill','#eae7e0').attr('stroke','#d4d0c8').attr('stroke-width',.5);
+
+// Graticule
+const gratEl = svg.append('path').datum(graticule)
+    .attr('fill','none').attr('stroke','#d8d4cc').attr('stroke-width',.3)
+    .attr('d', geoPath);
+
+// Countries
+const countriesG = svg.append('g');
+
+// State
+let spinning = true;
+let dragging = false;
+let dragStart = null, rotStart = null;
+let selId = null, selUni = null;
+let allFeatures = [];
+
+// ── DRAG TO ROTATE ──────────────────────────────────────────────────────────
+const drag = d3.drag()
+    .on('start', (event) => {
+        spinning = false;
+        dragging = true;
+        dragStart = [event.x, event.y];
+        rotStart  = projection.rotate();
+    })
+    .on('drag', (event) => {
+        if (!dragStart) return;
+        const dx = event.x - dragStart[0];
+        const dy = event.y - dragStart[1];
+        const [rx, ry, rz] = rotStart;
+        const sensitivity = 0.35;
+        projection.rotate([rx + dx*sensitivity, ry - dy*sensitivity, rz]);
+        redraw();
+    })
+    .on('end', () => { dragging = false; });
+
+svg.call(drag);
+
+function redraw() {
+    gratEl.attr('d', geoPath);
+    countriesG.selectAll('path').attr('d', geoPath);
+}
+
+// ── LOAD WORLD DATA ──────────────────────────────────────────────────────────
+fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(r => r.json())
+    .then(world => {
+        allFeatures = topojson.feature(world, world.objects.countries).features;
+
+        countriesG.selectAll('path')
+            .data(allFeatures)
+            .enter().append('path')
+            .attr('d', geoPath)
+            .attr('fill', d => COUNTRY_NAMES[+d.id] ? '#bfbbb2' : '#d2cec6')
+            .attr('stroke', '#f7f5f0').attr('stroke-width', .35)
+            .attr('cursor', d => COUNTRY_NAMES[+d.id] ? 'pointer' : 'default')
+            .on('mouseenter', function(event, d) {
+                if (dragging || !COUNTRY_NAMES[+d.id]) return;
+                if (+d.id !== selId) d3.select(this).attr('fill','#9e9890');
+                showTooltip(event, COUNTRY_NAMES[+d.id]);
+            })
+            .on('mousemove', (event) => {
+                const tt = document.getElementById('tooltip');
+                tt.style.left = (event.clientX + 12) + 'px';
+                tt.style.top  = (event.clientY - 28) + 'px';
+            })
+            .on('mouseleave', function(_, d) {
+                if (+d.id !== selId) {
+                    d3.select(this).attr('fill', COUNTRY_NAMES[+d.id] ? '#bfbbb2' : '#d2cec6');
+                }
+                hideTooltip();
+            })
+            .on('click', function(event, d) {
+                if (dragging) return;
+                const id = +d.id;
+                if (!COUNTRY_NAMES[id]) return;
+
+                spinning = false;
+                selId = id;
+                selUni = null;
+
+                // Reset fills
+                countriesG.selectAll('path')
+                    .attr('fill', dd => +dd.id === id ? '#1a1a1a' : COUNTRY_NAMES[+dd.id] ? '#bfbbb2' : '#d2cec6');
+
+                // Rotate to country centroid
+                const [cx, cy] = d3.geoCentroid(d);
+                const cur = projection.rotate();
+                d3.transition().duration(700).ease(d3.easeCubicOut)
+                    .tween('rotate', () => {
+                        const interp = d3.interpolate(cur, [-cx, -cy + 20, 12]);
+                        return t => { projection.rotate(interp(t)); redraw(); };
+                    });
+
+                // Badge
+                const badge = document.getElementById('selected-badge');
+                badge.classList.add('visible');
+                document.getElementById('badge-country').textContent = COUNTRY_NAMES[id];
+
+                hideTooltip();
+                openDrawer(id);
+            });
+
+        // Auto-spin
+        d3.timer(() => {
+            if (!spinning || dragging) return;
+            const [rx, ry, rz] = projection.rotate();
+            projection.rotate([rx + 0.08, ry, rz]);
+            redraw();
+        });
+    });
+
+// ── TOOLTIP ──────────────────────────────────────────────────────────────────
+function showTooltip(event, text) {
+    const tt = document.getElementById('tooltip');
+    tt.textContent = text;
+    tt.style.opacity = '1';
+    tt.style.left = (event.clientX + 12) + 'px';
+    tt.style.top  = (event.clientY - 28) + 'px';
+}
+function hideTooltip() {
+    document.getElementById('tooltip').style.opacity = '0';
+}
+
+// ── DRAWER LOGIC ──────────────────────────────────────────────────────────────
+let allUnis = [];
+
+function openDrawer(id) {
+    allUnis = QS[id] || [];
+    const name = COUNTRY_NAMES[id];
+
+    document.getElementById('drawer-country').textContent = name;
+    document.getElementById('drawer-sub').textContent = allUnis.length + ' университетов в QS 500';
+    document.getElementById('search-input').value = '';
+    renderList(allUnis);
+
+    const sb = document.getElementById('submit-btn');
+    sb.disabled = true;
+    sb.textContent = 'Выбери университет';
+    selUni = null;
+
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('backdrop').classList.add('visible');
+}
+
+function closeDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('backdrop').classList.remove('visible');
+}
+
+document.getElementById('drawer-close').onclick = closeDrawer;
+document.getElementById('backdrop').onclick = closeDrawer;
+document.getElementById('badge-open').onclick = () => {
+    if (selId) openDrawer(selId);
+};
+
+// Search
+document.getElementById('search-input').addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    const filtered = q ? allUnis.filter(u => u.n.toLowerCase().includes(q)) : allUnis;
+    renderList(filtered);
+});
+
+function renderList(unis) {
+    const list = document.getElementById('uni-list');
+    list.innerHTML = '';
+    unis.forEach(u => {
+        const btn = document.createElement('button');
+        btn.className = 'uni-btn' + (selUni?.r === u.r ? ' sel' : '');
+        btn.innerHTML = `<span class="uni-name">${u.n}</span><span class="uni-rank">#${u.r}</span>`;
+        btn.onclick = () => {
+            document.querySelectorAll('.uni-btn').forEach(b => b.classList.remove('sel'));
+            btn.classList.add('sel');
+            selUni = u;
+            const sb = document.getElementById('submit-btn');
+            sb.disabled = false;
+            const short = u.n.length > 32 ? u.n.substring(0,30)+'…' : u.n;
+            sb.textContent = short + ' →';
+        };
+        list.appendChild(btn);
+    });
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
+const loadPhrases = [
+    'Анализируем профиль студента...',
+    'Сравниваем с кейсами Узбекистана...',
+    'Оцениваем шансы поступления...',
+    'Строим персональный роадмап...',
+    'Финализируем стратегию...'
+];
+
+document.getElementById('submit-btn').onclick = async () => {
+    if (!selUni) return;
+
+    const payload = { ...profile, dream_university: selUni.n };
+
+    document.querySelector('body > *:not(#loading)');
+    document.getElementById('loading').classList.add('show');
+
+    let i = 0;
+    const statusEl = document.getElementById('load-status');
+    const timer = setInterval(() => { statusEl.textContent = loadPhrases[i++ % loadPhrases.length]; }, 1500);
+
+    try {
+        const res  = await fetch('/api/generate-roadmap', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        clearInterval(timer);
+
+        if (!data.success) {
+            alert('Ошибка: ' + data.error);
+            document.getElementById('loading').classList.remove('show');
+            return;
+        }
+        sessionStorage.setItem('result', JSON.stringify(data.data));
+        window.location.href = '/result.html';
+    } catch (e) {
+        clearInterval(timer);
+        alert('Не удалось связаться с сервером.');
+        document.getElementById('loading').classList.remove('show');
+    }
+};
+
+// ── COUNTRY SEARCH ────────────────────────────────────────────────────────────
+const countrySearchInput = document.getElementById('country-search');
+const countryDropdown    = document.getElementById('country-dropdown');
+
+// Build searchable list: { id, name, aliases }
+const COUNTRY_ALIASES = {
+    840: ['сша','usa','us','america','соединенные штаты','соединённые штаты'],
+    826: ['великобритания','uk','britain','england','англия','лондон'],
+    276: ['германия','germany','deutschland','берлин'],
+    756: ['швейцария','switzerland','zurich','цюрих'],
+    702: ['сингапур','singapore'],
+    410: ['южная корея','корея','south korea','korea','сеул','seoul'],
+    250: ['франция','france','paris','париж'],
+    528: ['нидерланды','netherlands','holland','голландия'],
+    124: ['канада','canada','toronto'],
+    36:  ['австралия','australia','sydney'],
+    156: ['китай','china','beijing','пекин'],
+    392: ['япония','japan','tokyo','токио'],
+    356: ['индия','india'],
+    752: ['швеция','sweden','stockholm'],
+    208: ['дания','denmark','copenhagen'],
+    246: ['финляндия','finland','helsinki'],
+    578: ['норвегия','norway','oslo'],
+    56:  ['бельгия','belgium','brussels','брюссель'],
+    40:  ['австрия','austria','vienna','вена'],
+    203: ['чехия','czech','prague','прага'],
+    554: ['новая зеландия','new zealand','auckland','окленд'],
+    380: ['италия','italy','rome','рим','milan','милан'],
+    724: ['испания','spain','madrid','мадрид','barcelona','барселона']
+};
+
+function searchCountries(q) {
+    if (!q) return [];
+    const lq = q.toLowerCase();
+    return Object.entries(COUNTRY_NAMES)
+        .filter(([id, name]) => {
+            if (name.toLowerCase().includes(lq)) return true;
+            const aliases = COUNTRY_ALIASES[+id] || [];
+            return aliases.some(a => a.includes(lq));
+        })
+        .map(([id, name]) => ({ id: +id, name, count: (QS[+id] || []).length }))
+        .slice(0, 6);
+}
+
+function renderDropdown(results) {
+    countryDropdown.innerHTML = '';
+    if (!results.length) {
+        countryDropdown.classList.remove('show');
+        return;
+    }
+    results.forEach(({ id, name, count }) => {
+        const div = document.createElement('div');
+        div.className = 'country-option';
+        div.innerHTML = `<span>${name}</span><span class="country-option-count">${count} вузов</span>`;
+        div.onclick = () => {
+            countrySearchInput.value = name;
+            countryDropdown.classList.remove('show');
+            selectCountryById(id);
+        };
+        countryDropdown.appendChild(div);
+    });
+    countryDropdown.classList.add('show');
+}
+
+function selectCountryById(id) {
+    if (!allFeatures.length) return;
+    spinning = false;
+    selId = id; selUni = null;
+
+    const feature = allFeatures.find(f => +f.id === id);
+    if (!feature) return;
+
+    // Highlight
+    countriesG.selectAll('path')
+        .attr('fill', d => +d.id === id ? '#1a1a1a' : COUNTRY_NAMES[+d.id] ? '#bfbbb2' : '#d2cec6');
+
+    // Rotate globe to country
+    const [cx, cy] = d3.geoCentroid(feature);
+    const cur = projection.rotate();
+    d3.transition().duration(800).ease(d3.easeCubicOut)
+        .tween('rotate', () => {
+            const interp = d3.interpolate(cur, [-cx, -cy + 20, 12]);
+            return t => { projection.rotate(interp(t)); redraw(); };
+        });
+
+    // Badge
+    document.getElementById('selected-badge').classList.add('visible');
+    document.getElementById('badge-country').textContent = COUNTRY_NAMES[id];
+
+    openDrawer(id);
+}
+
+countrySearchInput.addEventListener('input', function() {
+    const results = searchCountries(this.value.trim());
+    renderDropdown(results);
+});
+
+countrySearchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        countryDropdown.classList.remove('show');
+        this.blur();
+    }
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.country-search-wrap')) {
+        countryDropdown.classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>
